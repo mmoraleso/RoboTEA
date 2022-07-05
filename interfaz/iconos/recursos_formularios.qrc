@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="iconos">
+    <file>IMG_0344.PNG</file>
+    <file>botonVolumen.png</file>
+    <file>emocionesBoton.png</file>
+    <file>preguntaicono.png</file>
+    <file>premioicono.png</file>
+    <file>recursos.qrc</file>
+    <file>boton-de-pausa.png</file>
+    <file>boton-de-play.png</file>
+    <file>cruzroja.png</file>
+    <file>tickverde.png</file>
+  </qresource>
+</RCC>

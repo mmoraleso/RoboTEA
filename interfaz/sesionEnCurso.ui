@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>990</width>
+    <height>668</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QFrame" name="frame_2">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>90</y>
+     <width>990</width>
+     <height>668</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QFrame" name="izq_cont">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>991</width>
+      <height>668</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QFrame" name="menu_cont">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <widget class="QPushButton" name="darAltaNinosButton">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>330</y>
+          <width>162</width>
+          <height>156</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="iconos/recursos_formularios.qrc">
+          <normaloff>:/iconos/emotional.png</normaloff>:/iconos/emotional.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>150</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="nuevasesion_label">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>220</y>
+          <width>117</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Ubuntu</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Iniciar Situación</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="nuevaSesionButton">
+        <property name="geometry">
+         <rect>
+          <x>210</x>
+          <y>50</y>
+          <width>162</width>
+          <height>156</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="iconos/recursos_formularios.qrc">
+          <normaloff>:/iconos/boton-de-play.png</normaloff>:/iconos/boton-de-play.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>150</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>500</y>
+          <width>160</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Comprobar emociones</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="editarInfoButton">
+        <property name="geometry">
+         <rect>
+          <x>570</x>
+          <y>330</y>
+          <width>162</width>
+          <height>156</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="iconos/recursos_formularios.qrc">
+          <normaloff>:/iconos/sonido.png</normaloff>:/iconos/sonido.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>150</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>500</y>
+          <width>151</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Cozmo pregunta</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="nuevasesion_label_2">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>220</y>
+          <width>157</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Ubuntu</family>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Pausar Situación</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="editarOrdenesButton">
+        <property name="geometry">
+         <rect>
+          <x>560</x>
+          <y>50</y>
+          <width>162</width>
+          <height>156</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="iconos/recursos_formularios.qrc">
+          <normaloff>:/iconos/boton-de-pausa.png</normaloff>:/iconos/boton-de-pausa.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>150</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>990</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>91</height>
+    </size>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="titulo">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>990</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu</family>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgba(183, 184, 250, 252)</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="text">
+     <string>Sesión en curso</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources>
+  <include location="iconos/recursos_formularios.qrc"/>
+  <include location="iconos/recursos.qrc"/>
+ </resources>
+ <connections/>
+</ui>

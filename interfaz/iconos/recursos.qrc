@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="iconos">
+    <file>icons8-larva-del-moscardón-96.png</file>
+    <file>cozmo.png</file>
+    <file>editar_cozmo_150.png</file>
+    <file>icons8-niños-150.png</file>
+    <file>icons8-niños-editar-150.png</file>
+    <file>icons8-ayuda-64.png</file>
+    <file>icons8-bmo-48.png</file>
+    <file>icons8-larva-del-moscardón-48.png</file>
+    <file>icons8-menú-24.png</file>
+  </qresource>
+</RCC>
