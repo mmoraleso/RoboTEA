@@ -21,7 +21,7 @@ if IceLoaded:
     __ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
     __icePaths = []
     path = os.path.dirname(os.path.realpath(__file__))
-    #__icePaths.append(PATHINTERFACES)
+    __icePaths.append(os.path.join(path, "interfaces"))
 
     for ice in __ICEs:
         for p in __icePaths:

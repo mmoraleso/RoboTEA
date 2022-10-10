@@ -119,10 +119,11 @@ class SesionEnCurso(QWidget):
     def contarSituacion(self):
         print("Contado situación")
         # Probar cozmo
+        # TODO: CODIGO COZMO
 
         print(" -- Prueba de Cozmo --")
         usedFunctions = ['cozmoCat']
-
+        #
         try:
             robot = Robot(availableFunctions=usedFunctions)
         except Exception as e:

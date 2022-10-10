@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import learnblock.Client as Client
+#import learnblock.Client as Client
+from learnblock.Client import *
 from learnblock.functions import getFuntions
 import os, numpy as np, PIL.Image as Image, PIL.ImageFilter as ImageFilter, io, cv2, paho.mqtt.client, threading, math
 import cozmo as cozmoR
 from cozmo.util import radians, degrees, distance_mm, speed_mmps
 from learnblock.Devices import *
+import time
 
 cozmo = None
 K = 1  # Speed constant
@@ -19,7 +21,7 @@ def cozmo_program(_robot: cozmoR.robot.Robot):
     while not stopThread:
         pass
 
-class Robot(Client.Client):
+class Robot(Client):
     devicesAvailables = ["base", "camera", "display", "jointmotor", "groundsensors", "acelerometer", "gyroscope", "speaker"]
 
     def __init__(self):
