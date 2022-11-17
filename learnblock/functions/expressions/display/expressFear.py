@@ -1,4 +1,4 @@
-from learnbot_dsl.Clients.Devices import Emotions
+from learnblock.Devices import Emotions
 
 
 def expressFear(lbot):

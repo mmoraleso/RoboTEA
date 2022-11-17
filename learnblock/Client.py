@@ -3,11 +3,13 @@
 from __future__ import print_function, absolute_import
 from threading import Thread, Lock, Event
 import numpy as np, copy, sys, time, os, subprocess, json
-import learnblock.Devices
+path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(path, ".."))
+from learnblock.Devices import *
 #from learnbot_dsl import PATHINTERFACES
 from datetime import timedelta
 from learnblock.functions import getFuntions
-#from learnbot_dsl.learnbotCode import getAprilTextDict
+from learnblock.learnbotCode import getAprilTextDict
 
 global IceLoaded
 
@@ -114,7 +116,8 @@ class Client(Thread, metaclass=MetaClient):
         self.__apriltag_current_exist = False
         self.__listAprilIDs = []
         self.__posAprilTags = {}
-        self.aprilTextDict = getAprilTextDict()
+        #TODO: Comprobar que esta linea sea necesaria
+        #self.aprilTextDict = getAprilTextDict()
 
         self.__apriltagRunning = False
         self.__emotionRecRunning = False
