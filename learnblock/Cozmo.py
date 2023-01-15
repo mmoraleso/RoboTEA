@@ -23,7 +23,7 @@ def cozmo_program(_robot: cozmoR.robot.Robot):
     global stopThread
     cozmo = _robot
     while not stopThread:
-        print("Dentro de while not stopThread path: " + os.path.join(path, ".."))
+       # print("Dentro de while not stopThread path: " + os.path.join(path, ".."))
         pass
 
 class Robot(Client):

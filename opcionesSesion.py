@@ -18,10 +18,12 @@ class OpcionesSesion(QWidget):
         self.formVisible = False
         self.botonAceptar.clicked.connect(self.mostrarSesion)
         self.botonCancelar.clicked.connect(lambda : self.windowOpciones.close())
+        self.datosSesion = {}
 
-    def clickAceptar(self):
-        print("click aceptar")
-        self.guardarDatos()
+    # Creo que este metodo no sería necesario
+    # def clickAceptar(self):
+    #     print("click aceptar")
+    #     self.guardarDatos()
 
     def show(self):
         self.windowOpciones.show()
@@ -76,10 +78,12 @@ class OpcionesSesion(QWidget):
         actividad3 = self.actividad3CB.currentText()
         niñoSesion = self.childrenComboBox.currentText()
 
-        datosSesion = [actividad1, actividad2, actividad3, niñoSesion]
+        self.datosSesion = [actividad1, actividad2, actividad3, niñoSesion]
 
     def mostrarSesion(self):
-        self.sesionWindow = SesionEnCurso()
+        self.guardarDatos()
+        #Nos lleva a la siguiente pantalla, la pantalla de la sesión
+        self.sesionWindow = SesionEnCurso(self.datosSesion)
         if self.sesionWindow.isVisible():
             self.sesionWindow.hide()
         else:

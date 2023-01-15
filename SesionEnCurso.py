@@ -16,7 +16,7 @@ import sys
 
 
 class SesionEnCurso(QWidget):
-    def __init__(self):
+    def __init__(self, datosSesion):
         QWidget.__init__(self)
         self.setupUi(self)
         self.setWindowFlag(Qt.Window)
@@ -30,6 +30,8 @@ class SesionEnCurso(QWidget):
         self.botonEmociones.clicked.connect(self.comprobarEmociones)
         self.botonPregunta.clicked.connect(self.cozmoPregunta)
         self.botonPremio.clicked.connect(self.darRecompensa)
+        self.lineasFichero = {}
+        self.datosSesion = datosSesion
 
     def show(self):
         self.windowSesion.show()
@@ -118,36 +120,7 @@ class SesionEnCurso(QWidget):
 
     def contarSituacion(self):
         print("Contado situación")
-        # Probar cozmo
-        # TODO: CODIGO COZMO
-
-        print(" -- Prueba de Cozmo --")
-        usedFunctions = ['cozmoCat']
-        #
-        try:
-            robot = Robot(availableFunctions=usedFunctions)
-        except Exception as e:
-            print("Problems creating a robot instance")
-            traceback.print_exc()
-            raise (e)
-
-        time_global_start = time.time()
-
-        def elapsedTime(umbral):
-            global time_global_start
-            time_global = time.time() - time_global_start
-            return time_global > umbral
-
-        def signal_handler(sig, frame):
-            robot.stop()
-            sys.exit(0)
-
-        signal.signal(signal.SIGTERM, signal_handler)
-        signal.signal(signal.SIGINT, signal_handler)
-
-        robot.cozmoCat()
-        robot.stop()
-
+        self.leerSituacion('historia1')
 
         if self.pausado == False:
             self.estado = 0
@@ -173,6 +146,11 @@ class SesionEnCurso(QWidget):
         if self.pausado == False:
             self.estado = 3
             self.estado += 1
-            self.cambiarEstado(
+            self.cambiarEstado()
 
-            )
+    def leerSituacion(self, situacion):
+        print("Leyendo situacion: " + situacion)
+        fichero = open("historias/"+situacion+'.txt')
+        self.lineasFichero = fichero.readlines() #listado con las
+        for n in self.lineasFichero:
+            print(n.replace("{nombreNiño}", self.datosSesion[3]))
