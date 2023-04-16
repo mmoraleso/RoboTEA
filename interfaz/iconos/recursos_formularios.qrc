@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="iconos">
+    <file>boton-detener.png</file>
     <file>IMG_0344.PNG</file>
     <file>botonVolumen.png</file>
     <file>emocionesBoton.png</file>

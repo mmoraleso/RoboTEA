@@ -24,12 +24,14 @@ class SesionEnCurso(QWidget):
         self.formVisible = False
         self.estado = 0
         self.pausado = True
+        self.detenido = True
         self.botonPausar.clicked.connect(self.pausar)
         self.botonReanudar.clicked.connect(self.reanudar)
         self.botonSituacion.clicked.connect(self.contarSituacion)
         self.botonEmociones.clicked.connect(self.comprobarEmociones)
         self.botonPregunta.clicked.connect(self.cozmoPregunta)
         self.botonPremio.clicked.connect(self.darRecompensa)
+        self.botonDetener.clicked.connect(self.detener())
         self.lineasFichero = {}; #listado con las lineas del fichero de situación
         self.lineasSinDecir = {}; #listado de lineas que todavía no se han dicho
         self.datosSesion = datosSesion
@@ -76,6 +78,12 @@ class SesionEnCurso(QWidget):
         iconoPausar.addFile("./interfaz/iconos/boton-de-pausa.png", QSize(), QIcon.Normal, QIcon.Off)
         self.botonPausar.setIcon(iconoPausar)
 
+        #imagen boton Detener
+        iconoDetener = QIcon()
+        iconoDetener.addFile("./interfaz/iconos/boton-detener.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.botonDetener.setIcon(iconoDetener)
+
+
     def cambiarEstado(self):
         print("estado " + str(self.estado))
         if self.pausado == False:
@@ -88,12 +96,19 @@ class SesionEnCurso(QWidget):
             if self.estado == 3:
                 self.darRecompensa()
 
+    def detener(self):
+        print("Deteniendo la sesión")
+        self.detenido = True
+        self.lineasSinDecir = {}
+
     def reanudar(self):
         self.pausado = False
+        self.detenido = False
         self.cambiarEstado()
 
     def pausar(self):
         self.pausado = True
+        self.detenido = False
 
     def setupUi(self, DarAlta):
 
@@ -118,6 +133,7 @@ class SesionEnCurso(QWidget):
         self.botonEmociones = self.windowSesion.findChild(QPushButton, 'botonEmociones')
         self.botonPregunta = self.windowSesion.findChild(QPushButton, 'botonPregunta')
         self.botonPremio = self.windowSesion.findChild(QPushButton, 'botonPremio')
+        self.botonDetener = self.windowSesion.findChild(QPushButton, 'botonDetener')
 
     def contarSituacion(self):
         print("Contado situación")
@@ -152,12 +168,10 @@ class SesionEnCurso(QWidget):
     def leerSituacion(self, situacion):
         print("Leyendo situacion: " + situacion)
         fichero = open("historias/"+situacion+'.txt')
-        if(self.lineasSinDecir):
-            self.lineasFichero = self.lineasFichero.copy()
-        else:
+        if not self.lineasSinDecir:
             self.lineasFichero = fichero.readlines()
             self.lineasSinDecir = self.lineasFichero.copy()
-        while self.pausado:
+        while not self.pausado:
             for n in self.lineasFichero:
                 print(n.replace("{nombreNiño}", self.datosSesion[3]))
                 # TODO: Cozmo dice la frase
