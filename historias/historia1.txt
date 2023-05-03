@@ -1,5 +1,5 @@
 Esta historia es de prueba
-Podemos hacer que va dirigida a un nicho de nombre {nombreNiño}
+Podemos hacer que va dirigida a un niño de nombre {nombreNiño}
 Y ponemos diferentes lineas para ver que tal
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla sagittis consectetur.
 Maecenas venenatis a nisi consectetur porta. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;

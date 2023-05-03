@@ -31,7 +31,7 @@ class SesionEnCurso(QWidget):
         self.botonEmociones.clicked.connect(self.comprobarEmociones)
         self.botonPregunta.clicked.connect(self.cozmoPregunta)
         self.botonPremio.clicked.connect(self.darRecompensa)
-        self.botonDetener.clicked.connect(self.detener())
+        self.botonDetener.clicked.connect(self.detener)
         self.lineasFichero = {}; #listado con las lineas del fichero de situación
         self.lineasSinDecir = {}; #listado de lineas que todavía no se han dicho
         self.datosSesion = datosSesion
@@ -171,9 +171,8 @@ class SesionEnCurso(QWidget):
         if not self.lineasSinDecir:
             self.lineasFichero = fichero.readlines()
             self.lineasSinDecir = self.lineasFichero.copy()
-        while not self.pausado:
-            for n in self.lineasFichero:
-                print(n.replace("{nombreNiño}", self.datosSesion[3]))
-                # TODO: Cozmo dice la frase
-                # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
-                self.lineasSinDecir = self.lineasSinDecir.pop(0)
+        while not self.pausado and self.lineasSinDecir and not self.detenido:
+            print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+            # TODO: Cozmo dice la frase
+            # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
+            self.lineasSinDecir.pop(0)
