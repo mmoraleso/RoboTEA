@@ -1,11 +1,13 @@
 from __future__ import print_function, absolute_import
 
 import sys
-from PySide2 import QtCore
+from PySide2 import QtCore, QtWidgets
 from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
 from PySide2.QtGui import QFont, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
+from qtpy import QtGui
+
 from db.queries import darAlta, actualizarDatosNiños, getById, getAll
 
 import sys, os, time, traceback
@@ -35,6 +37,7 @@ class SesionEnCurso(QWidget):
         self.lineasFichero = {}; #listado con las lineas del fichero de situación
         self.lineasSinDecir = {}; #listado de lineas que todavía no se han dicho
         self.datosSesion = datosSesion
+        self.app = QtWidgets.QApplication.instance()
 
     def show(self):
         self.windowSesion.show()
@@ -100,28 +103,36 @@ class SesionEnCurso(QWidget):
         print("Deteniendo la sesión")
         self.detenido = True
         self.lineasSinDecir = {}
+        print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
+        self.app.processEvents()
 
     def reanudar(self):
+        print("Reanudando la sesión")
         self.pausado = False
         self.detenido = False
+        self.app.processEvents()
         self.cambiarEstado()
 
+
     def pausar(self):
+        print("Pausando la sesión")
         self.pausado = True
         self.detenido = False
+        print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
+        self.app.processEvents()
 
     def setupUi(self, DarAlta):
 
         ui_file_name2 = "./interfaz/SesionEnCurso2.ui"
-        ui_fileDarAlta = QFile(ui_file_name2)
+        ui_fileSesionCurso = QFile(ui_file_name2)
 
-        if not ui_fileDarAlta.open(QIODevice.ReadOnly):
-            print("Cannot open {}: {}".format(ui_file_name2, ui_fileDarAlta.errorString()))
+        if not ui_fileSesionCurso.open(QIODevice.ReadOnly):
+            print("Cannot open {}: {}".format(ui_file_name2, ui_fileSesionCurso.errorString()))
             sys.exit(-1)
 
         loaderAlta = QUiLoader()
-        self.windowSesion = loaderAlta.load(ui_fileDarAlta)
-        ui_fileDarAlta.close()
+        self.windowSesion = loaderAlta.load(ui_fileSesionCurso)
+        ui_fileSesionCurso.close()
 
         if not self.windowSesion:
             print(self.windowSesion.errorString())
@@ -172,7 +183,16 @@ class SesionEnCurso(QWidget):
             self.lineasFichero = fichero.readlines()
             self.lineasSinDecir = self.lineasFichero.copy()
         while not self.pausado and self.lineasSinDecir and not self.detenido:
-            print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
-            # TODO: Cozmo dice la frase
-            # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
-            self.lineasSinDecir.pop(0)
+            print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
+            self.app.processEvents()
+            try:
+                # TODO: Cozmo dice la frase
+                print("Waiting for 5 seconds.")
+                time.sleep(5)
+                print("Wait is over.")
+                print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+                # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
+                self.lineasSinDecir.pop(0)
+            except KeyError:
+                print("Hay un error contando la situación")
+
