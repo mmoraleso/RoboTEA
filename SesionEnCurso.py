@@ -38,6 +38,9 @@ class SesionEnCurso(QWidget):
         self.lineasSinDecir = {}; #listado de lineas que todavía no se han dicho
         self.datosSesion = datosSesion
         self.app = QtWidgets.QApplication.instance()
+        self.robot = 0
+        self.usedFunctions = ['say_Text']
+        self.instanciarCozmo()
 
     def show(self):
         self.windowSesion.show()
@@ -49,6 +52,31 @@ class SesionEnCurso(QWidget):
 
     def isVisible(self):
         return self.formVisible
+
+    def setupUi(self, DarAlta):
+
+        ui_file_name2 = "./interfaz/SesionEnCurso2.ui"
+        ui_fileSesionCurso = QFile(ui_file_name2)
+
+        if not ui_fileSesionCurso.open(QIODevice.ReadOnly):
+            print("Cannot open {}: {}".format(ui_file_name2, ui_fileSesionCurso.errorString()))
+            sys.exit(-1)
+
+        loaderAlta = QUiLoader()
+        self.windowSesion = loaderAlta.load(ui_fileSesionCurso)
+        ui_fileSesionCurso.close()
+
+        if not self.windowSesion:
+            print(self.windowSesion.errorString())
+            sys.exit(-1)
+
+        self.botonReanudar = self.windowSesion.findChild(QPushButton, 'botonReanudar')
+        self.botonPausar = self.windowSesion.findChild(QPushButton, 'botonPausar')
+        self.botonSituacion = self.windowSesion.findChild(QPushButton, 'botonSituacion')
+        self.botonEmociones = self.windowSesion.findChild(QPushButton, 'botonEmociones')
+        self.botonPregunta = self.windowSesion.findChild(QPushButton, 'botonPregunta')
+        self.botonPremio = self.windowSesion.findChild(QPushButton, 'botonPremio')
+        self.botonDetener = self.windowSesion.findChild(QPushButton, 'botonDetener')
 
     def definirIconoBotones(self):
         # imagen boton Contar Sitacion
@@ -89,7 +117,7 @@ class SesionEnCurso(QWidget):
 
     def cambiarEstado(self):
         print("estado " + str(self.estado))
-        if self.pausado == False:
+        if self.pausado == False and self.detenido == False:
             if self.estado == 0:
                 self.contarSituacion()
             if self.estado == 1:
@@ -121,30 +149,14 @@ class SesionEnCurso(QWidget):
         print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
         self.app.processEvents()
 
-    def setupUi(self, DarAlta):
-
-        ui_file_name2 = "./interfaz/SesionEnCurso2.ui"
-        ui_fileSesionCurso = QFile(ui_file_name2)
-
-        if not ui_fileSesionCurso.open(QIODevice.ReadOnly):
-            print("Cannot open {}: {}".format(ui_file_name2, ui_fileSesionCurso.errorString()))
-            sys.exit(-1)
-
-        loaderAlta = QUiLoader()
-        self.windowSesion = loaderAlta.load(ui_fileSesionCurso)
-        ui_fileSesionCurso.close()
-
-        if not self.windowSesion:
-            print(self.windowSesion.errorString())
-            sys.exit(-1)
-
-        self.botonReanudar = self.windowSesion.findChild(QPushButton, 'botonReanudar')
-        self.botonPausar = self.windowSesion.findChild(QPushButton, 'botonPausar')
-        self.botonSituacion = self.windowSesion.findChild(QPushButton, 'botonSituacion')
-        self.botonEmociones = self.windowSesion.findChild(QPushButton, 'botonEmociones')
-        self.botonPregunta = self.windowSesion.findChild(QPushButton, 'botonPregunta')
-        self.botonPremio = self.windowSesion.findChild(QPushButton, 'botonPremio')
-        self.botonDetener = self.windowSesion.findChild(QPushButton, 'botonDetener')
+    def instanciarCozmo(self):
+        print(" -- Conexión con Cozmo --")
+        try:
+            self.robot = Robot(availableFunctions=self.usedFunctions)
+        except Exception as e:
+            print("Problems creating a robot instance")
+            traceback.print_exc()
+            raise (e)
 
     def contarSituacion(self):
         print("Contado situación")
@@ -179,20 +191,29 @@ class SesionEnCurso(QWidget):
     def leerSituacion(self, situacion):
         print("Leyendo situacion: " + situacion)
         fichero = open("historias/"+situacion+'.txt')
+
         if not self.lineasSinDecir:
             self.lineasFichero = fichero.readlines()
             self.lineasSinDecir = self.lineasFichero.copy()
+        print("Empieza la situación")
         while not self.pausado and self.lineasSinDecir and not self.detenido:
             print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
-            self.app.processEvents()
+
             try:
                 # TODO: Cozmo dice la frase
-                print("Waiting for 5 seconds.")
-                time.sleep(5)
-                print("Wait is over.")
+                self.robot.say_Text(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+
                 print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
                 # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
+                time.sleep(7)
+                self.app.processEvents()
                 self.lineasSinDecir.pop(0)
             except KeyError:
                 print("Hay un error contando la situación")
+
+        print("Cozmo ha terminado de contar la situación.")
+        self.pausado = True
+
+
+
 
