@@ -267,8 +267,8 @@
        <widget class="QPushButton" name="botonPausar">
         <property name="geometry">
          <rect>
-          <x>410</x>
-          <y>340</y>
+          <x>420</x>
+          <y>370</y>
           <width>162</width>
           <height>156</height>
          </rect>
@@ -282,8 +282,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>150</width>
-          <height>150</height>
+          <width>125</width>
+          <height>125</height>
          </size>
         </property>
         <property name="flat">
@@ -293,8 +293,8 @@
        <widget class="QPushButton" name="botonReanudar">
         <property name="geometry">
          <rect>
-          <x>200</x>
-          <y>340</y>
+          <x>210</x>
+          <y>370</y>
           <width>162</width>
           <height>156</height>
          </rect>
@@ -308,8 +308,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>150</width>
-          <height>150</height>
+          <width>125</width>
+          <height>125</height>
          </size>
         </property>
         <property name="flat">
@@ -395,8 +395,8 @@
        <widget class="QLabel" name="label_5">
         <property name="geometry">
          <rect>
-          <x>250</x>
-          <y>500</y>
+          <x>260</x>
+          <y>530</y>
           <width>69</width>
           <height>17</height>
          </rect>
@@ -414,8 +414,8 @@
        <widget class="QLabel" name="label_6">
         <property name="geometry">
          <rect>
-          <x>470</x>
-          <y>500</y>
+          <x>480</x>
+          <y>530</y>
           <width>50</width>
           <height>17</height>
          </rect>
@@ -434,7 +434,7 @@
         <property name="geometry">
          <rect>
           <x>620</x>
-          <y>340</y>
+          <y>370</y>
           <width>162</width>
           <height>156</height>
          </rect>
@@ -448,8 +448,8 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>150</width>
-          <height>150</height>
+          <width>125</width>
+          <height>125</height>
          </size>
         </property>
         <property name="flat">
@@ -460,7 +460,7 @@
         <property name="geometry">
          <rect>
           <x>680</x>
-          <y>500</y>
+          <y>530</y>
           <width>59</width>
           <height>15</height>
          </rect>
@@ -476,6 +476,54 @@
         </property>
         <property name="text">
          <string>Detener</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="barraVolumen">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>310</y>
+          <width>481</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">Slider::groove:horizontal {
+    border: 1px solid #999999;
+    height: 8px;
+    background: rgb(255, 255, 255);
+    margin: 2px 0;
+}
+
+QSlider::handle:horizontal {
+    background: rgb(85, 85, 255);
+    border: 1px solid #5c5c5c;
+    width: 18px;
+    margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+    border-radius: 3px;
+}</string>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>470</x>
+          <y>320</y>
+          <width>71</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Volumen</string>
         </property>
        </widget>
       </widget>

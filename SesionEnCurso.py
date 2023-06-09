@@ -34,13 +34,14 @@ class SesionEnCurso(QWidget):
         self.botonPregunta.clicked.connect(self.cozmoPregunta)
         self.botonPremio.clicked.connect(self.darRecompensa)
         self.botonDetener.clicked.connect(self.detener)
+        self.barraVolumen.valueChanged.connect(self.cambiarVolumen)
         self.lineasFichero = {}; #listado con las lineas del fichero de situación
         self.lineasSinDecir = {}; #listado de lineas que todavía no se han dicho
         self.datosSesion = datosSesion
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
         self.usedFunctions = ['say_Text']
-        self.instanciarCozmo()
+        #self.instanciarCozmo()
 
     def show(self):
         self.windowSesion.show()
@@ -77,6 +78,7 @@ class SesionEnCurso(QWidget):
         self.botonPregunta = self.windowSesion.findChild(QPushButton, 'botonPregunta')
         self.botonPremio = self.windowSesion.findChild(QPushButton, 'botonPremio')
         self.botonDetener = self.windowSesion.findChild(QPushButton, 'botonDetener')
+        self.barraVolumen = self.windowSesion.findChild(QSlider, 'barraVolumen')
 
     def definirIconoBotones(self):
         # imagen boton Contar Sitacion
@@ -113,6 +115,11 @@ class SesionEnCurso(QWidget):
         iconoDetener = QIcon()
         iconoDetener.addFile("./interfaz/iconos/boton-detener.png", QSize(), QIcon.Normal, QIcon.Off)
         self.botonDetener.setIcon(iconoDetener)
+
+        #Valores barra volumen
+        self.barraVolumen.setMinimum(0)
+        self.barraVolumen.setMaximum(100)
+        self.barraVolumen.setTickInterval(1)
 
 
     def cambiarEstado(self):
@@ -188,6 +195,12 @@ class SesionEnCurso(QWidget):
             self.estado += 1
             self.cambiarEstado()
 
+    def cambiarVolumen(self):
+        print("Cambiando volumen cozmo")
+        #TODO: Cambiar el volumen de cozmo con el metodo
+        self.barraVolumen.value()
+        self.app.processEvents()
+
     def leerSituacion(self, situacion):
         print("Leyendo situacion: " + situacion)
         fichero = open("historias/"+situacion+'.txt')
@@ -201,11 +214,11 @@ class SesionEnCurso(QWidget):
 
             try:
                 # TODO: Cozmo dice la frase
-                self.robot.say_Text(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
-
+                #self.robot.say_Text(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+                #self.robot.cozmo.wait_for_all_actions_completed()
                 print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
                 # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
-                time.sleep(7)
+
                 self.app.processEvents()
                 self.lineasSinDecir.pop(0)
             except KeyError:
