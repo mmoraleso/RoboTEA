@@ -496,7 +496,7 @@
 }
 
 QSlider::handle:horizontal {
-    background: rgb(85, 85, 255);
+    background: rgb(0, 79, 172);
     border: 1px solid #5c5c5c;
     width: 18px;
     margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
