@@ -41,7 +41,8 @@ class SesionEnCurso(QWidget):
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
         self.usedFunctions = ['say_Text']
-        #self.instanciarCozmo()
+        self.instanciarCozmo()
+        self.setVolumenInicial()
 
     def show(self):
         self.windowSesion.show()
@@ -195,10 +196,13 @@ class SesionEnCurso(QWidget):
             self.estado += 1
             self.cambiarEstado()
 
+    def setVolumenInicial(self):
+        self.robot.cozmo.set_robot_volume(0.75)
+        self.barraVolumen.setValue(75)
+
     def cambiarVolumen(self):
-        print("Cambiando volumen cozmo")
-        #TODO: Cambiar el volumen de cozmo con el metodo
-        self.barraVolumen.value()
+        print("Cambiando volumen cozmo: " + str(self.barraVolumen.value()))
+        self.robot.cozmo.set_robot_volume(self.barraVolumen.value()/100)
         self.app.processEvents()
 
     def leerSituacion(self, situacion):
@@ -213,12 +217,13 @@ class SesionEnCurso(QWidget):
             print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
 
             try:
+                self.app.processEvents()
                 # TODO: Cozmo dice la frase
-                #self.robot.say_Text(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
-                #self.robot.cozmo.wait_for_all_actions_completed()
+                self.robot.say_Text(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+                self.robot.cozmo.wait_for_all_actions_completed()
                 print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
-                # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
 
+                # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
                 self.app.processEvents()
                 self.lineasSinDecir.pop(0)
             except KeyError:
