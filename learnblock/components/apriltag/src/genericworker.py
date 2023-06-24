@@ -27,15 +27,11 @@ from PySide2 import QtGui, QtCore
 #	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 #	ROBOCOMP = '/opt/robocomp'
 
-from learnbot_dsl import PATHINTERFACES as pathInterfaces
-
-if os.path.isfile(os.path.join(pathInterfaces, 'CommonBehavior.ice')):
-	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'CommonBehavior.ice')
+from learnblock import PATHINTERFACES as path
+#
+if os.path.isfile(os.path.join(path, 'CommonBehavior.ice')):
+	wholeStr = "-I" + path + " --all "+os.path.join(path, 'CommonBehavior.ice')
 	Ice.loadSlice(wholeStr)
-
-
-#preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
-#Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
 additionalPathStr = ''
@@ -57,7 +53,7 @@ if not ice_Apriltag:
 from RoboCompApriltag import *
 
 
-from learnbot_dsl.components.apriltag.src.apriltagI import *
+from learnblock.components.apriltag.src.apriltagI import *
 
 
 class GenericWorker(QtCore.QObject):

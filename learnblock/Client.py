@@ -20,7 +20,7 @@ except ImportError as e:
     IceLoaded = False
 
 if IceLoaded:    
-    __ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
+    __ICEs = ["EmotionRecognition.ice", "Apriltag.ice"]
     __icePaths = []
     path = os.path.dirname(os.path.realpath(__file__))
     __icePaths.append(os.path.join(path, "interfaces"))
@@ -117,7 +117,7 @@ class Client(Thread, metaclass=MetaClient):
         self.__listAprilIDs = []
         self.__posAprilTags = {}
         #TODO: Comprobar que esta linea sea necesaria
-        #self.aprilTextDict = getAprilTextDict()
+        self.aprilTextDict = getAprilTextDict()
 
         self.__apriltagRunning = False
         self.__emotionRecRunning = False
@@ -126,16 +126,18 @@ class Client(Thread, metaclass=MetaClient):
 
     def __launchComponents(self):
         global IceLoaded
-
         if IceLoaded:
+            currentFilePath = os.path.dirname(os.path.realpath(__file__))
             try:
-                subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                aprilTagPath = os.path.join(currentFilePath, "components/apriltag/src/aprilTag.py")
+                subprocess.Popen(aprilTagPath, shell=True, stdout=subprocess.PIPE)
                 self.__apriltagRunning = True
             except Exception as e:
                 self.__apriltagRunning = False
 
             try:
-                subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                emotionRecognitionPath = os.path.join(currentFilePath, "components/emotionrecognition2/src/emotionrecognition2.py")
+                subprocess.Popen(emotionRecognitionPath, shell=True, stdout=subprocess.PIPE)
                 self.__emotionRecRunning = True
             except Exception as e:
                 self.__emotionRecRunning = False

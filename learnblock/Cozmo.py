@@ -32,6 +32,7 @@ class Robot(Client):
     def __init__(self):
         global cozmo
         global stopThread
+        # porcentajeCarga = 25
         stopThread = False
         Client.__init__(self)
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
@@ -54,8 +55,10 @@ class Robot(Client):
         self.CozmoBehaviors = {}
         self.setBehaviors()
         self.start()
+        # porcentajeCarga = 100
 
     def connectToRobot(self):
+        # porcentajeCarga = 50
         cozmoR.robot.Robot.drive_off_charger_on_connect = False
         self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program))
         self.t.start()

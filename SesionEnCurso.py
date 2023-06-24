@@ -16,7 +16,7 @@ from learnblock.Cozmo import Robot
 import signal
 import sys
 
-
+#global porcentajeCarga
 class SesionEnCurso(QWidget):
     def __init__(self, datosSesion):
         QWidget.__init__(self)
@@ -25,6 +25,7 @@ class SesionEnCurso(QWidget):
         self.definirIconoBotones()
         self.formVisible = False
         self.estado = 0
+        # porcentajeCarga = 0
         self.pausado = True
         self.detenido = True
         self.botonPausar.clicked.connect(self.pausar)
@@ -218,7 +219,6 @@ class SesionEnCurso(QWidget):
 
             try:
                 self.app.processEvents()
-                # TODO: Cozmo dice la frase
                 self.robot.say_Text(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
                 self.robot.cozmo.wait_for_all_actions_completed()
                 print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
