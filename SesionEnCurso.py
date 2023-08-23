@@ -8,6 +8,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 from qtpy import QtGui
 
+from PantallaDeCarga import PantallaDeCarga
 from db.queries import darAlta, actualizarDatosNiños, getById, getAll
 
 import sys, os, time, traceback
@@ -17,15 +18,33 @@ import signal
 import sys
 
 #global porcentajeCarga
+# class Threaded(QThread):
+#     result = pyqtSignal(int)
+#     def __init__(self, parent=None, **kwargs):
+#         super().__init__(parent, **kwargs)
+#
+#     def run(self):
+#         self.keepGoing = True
+#         while self.keepGoing:
+#             print("test")
+#             self.msleep(1)
+#
+#     def stop(self):
+#         self.keepGoing = False
+
 class SesionEnCurso(QWidget):
-    def __init__(self, datosSesion):
+    def __init__(self, datosSesion, windowOpciones):
         QWidget.__init__(self)
-        self.setupUi(self)
+        self.windowOpciones = windowOpciones
+        self.setWindowTitle("Sesion En Curso")
+        # self.windowOpciones.close()
+        self.pantallaDeCarga = PantallaDeCarga()
+        self.mostrarPantallas()
+        self.setupUiSesionEnCurso(self)
         self.setWindowFlag(Qt.Window)
         self.definirIconoBotones()
         self.formVisible = False
         self.estado = 0
-        # porcentajeCarga = 0
         self.pausado = True
         self.detenido = True
         self.botonPausar.clicked.connect(self.pausar)
@@ -42,21 +61,47 @@ class SesionEnCurso(QWidget):
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
         self.usedFunctions = ['say_Text']
+        self.windowOpciones.close()
+        # self.threaded = Threaded()
+        # self.threaded.moveToThread()
+        # self.threaded.start()
+
         self.instanciarCozmo()
         self.setVolumenInicial()
+        self.mostrarPantallas()
+        # self.app.aboutToQuit(self.threaded.stop)
 
-    def show(self):
+
+    def mostrarPantallas(self):
+        if self.pantallaDeCarga.getLoadingBarValue() < 100:
+            if self.pantallaDeCarga.isVisibleCarga():
+                print("Hiding pantalla de carga")
+                self.pantallaDeCarga.hideCarga()
+            else:
+                print("Opening pantalla de carga")
+                self.windowOpciones.close()
+                self.pantallaDeCarga.windowCarga.show()
+        else :
+            print("abriendo sesion en curso")
+            self.pantallaDeCarga.windowCarga.close()
+            if self.isVisibleSesion():
+                self.hideSesion()
+            else:
+                self.showSesion()
+                self.windowOpciones.close()
+
+    def showSesion(self):
         self.windowSesion.show()
         self.formVisible = True
 
-    def hide(self):
+    def hideSesion(self):
         self.windowSesion.hide()
         self.formVisible = False
 
-    def isVisible(self):
+    def isVisibleSesion(self):
         return self.formVisible
 
-    def setupUi(self, DarAlta):
+    def setupUiSesionEnCurso(self, DarAlta):
 
         ui_file_name2 = "./interfaz/SesionEnCurso2.ui"
         ui_fileSesionCurso = QFile(ui_file_name2)
@@ -73,6 +118,7 @@ class SesionEnCurso(QWidget):
             print(self.windowSesion.errorString())
             sys.exit(-1)
 
+        self.setWindowTitle("Sesión En Curso")
         self.botonReanudar = self.windowSesion.findChild(QPushButton, 'botonReanudar')
         self.botonPausar = self.windowSesion.findChild(QPushButton, 'botonPausar')
         self.botonSituacion = self.windowSesion.findChild(QPushButton, 'botonSituacion')
@@ -161,7 +207,7 @@ class SesionEnCurso(QWidget):
     def instanciarCozmo(self):
         print(" -- Conexión con Cozmo --")
         try:
-            self.robot = Robot(availableFunctions=self.usedFunctions)
+            self.robot = Robot(availableFunctions=self.usedFunctions, pantallaCarga=self.pantallaDeCarga)
         except Exception as e:
             print("Problems creating a robot instance")
             traceback.print_exc()

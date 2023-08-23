@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import
 import numpy as np
 import tensorflow as tf
-from six.moves import cPickle as pickle
+from six.moves import cPickle as picklet
 from six.moves import range
 
 PICKLE_FILE = 'emotion_dataset.pickle'     # pickle file in which the preprocessed datasets are stored

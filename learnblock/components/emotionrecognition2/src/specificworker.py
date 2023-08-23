@@ -59,7 +59,7 @@ class SpecificWorker(GenericWorker):
         self.sess=tf.compat.v1.Session()
 
         # Read the frozen graph from the model file
-        with gfile.FastGFile(MODEL_FILE,'rb') as f:
+        with gfile.GFile(MODEL_FILE,'rb') as f:
             graph_def = tf.compat.v1.GraphDef()
             graph_def.ParseFromString(f.read())
             self.sess.graph.as_default()

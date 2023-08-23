@@ -4,7 +4,6 @@ from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
 from PySide2.QtGui import QFont, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
-
 from SesionEnCurso import SesionEnCurso
 from db.queries import darAlta, actualizarDatosNiños, getById, getAll
 
@@ -83,9 +82,5 @@ class OpcionesSesion(QWidget):
     def mostrarSesion(self):
         self.guardarDatos()
         #Nos lleva a la siguiente pantalla, la pantalla de la sesión
-        self.sesionWindow = SesionEnCurso(self.datosSesion)
-        if self.sesionWindow.isVisible():
-            self.sesionWindow.hide()
-        else:
-            self.sesionWindow.show()
-            self.windowOpciones.close()
+        self.sesionEnCurso  = SesionEnCurso(self.datosSesion, self.windowOpciones)
+

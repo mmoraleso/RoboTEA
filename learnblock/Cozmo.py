@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #import learnblock.Client as Client
+import queue
 import sys, os, numpy as np, PIL.Image as Image, PIL.ImageFilter as ImageFilter, io, cv2, paho.mqtt.client, threading, math
 path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(path, ".."))
@@ -27,14 +28,24 @@ def cozmo_program(_robot: cozmoR.robot.Robot):
         pass
 
 class Robot(Client):
+    print("Dentro de robot cozmo.py")
     devicesAvailables = ["base", "camera", "display", "jointmotor", "groundsensors", "acelerometer", "gyroscope", "speaker"]
 
     def __init__(self):
+        print("Dentro de init cozmo.py")
         global cozmo
         global stopThread
-        # porcentajeCarga = 25
         stopThread = False
         Client.__init__(self)
+        print("client cozmo pantal")
+        # self.pantallaCarga.showCarga()
+        print("Pantalla de carga en cozmo: " + str(self.pantallaCargaClient))
+        self.message_queue = queue.Queue()
+        self.subscribers = []
+        self.subscribeToLoadingPageInfo(self.pantallaCargaClient)
+        self.publishLoadingPageInfo(25)
+        print("publishin... " + str(25))
+        # self.porcentajeCarga = 25
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
         self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
         self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.deviceResetGyroscope), "Z_AXIS")
@@ -54,11 +65,17 @@ class Robot(Client):
         self.last_pose_read = 0
         self.CozmoBehaviors = {}
         self.setBehaviors()
+        # self.porcentajeCarga = 75
+        self.publishLoadingPageInfo(75)
+        print("publishin... " + str(75))
         self.start()
-        # porcentajeCarga = 100
+        self.publishLoadingPageInfo(100)
+        print("publishin... " + str(100))
+        # self.porcentajeCarga = 100
 
     def connectToRobot(self):
-        # porcentajeCarga = 50
+        # self.porcentajeCarga = 50
+        self.publishLoadingPageInfo(50)
         cozmoR.robot.Robot.drive_off_charger_on_connect = False
         self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program))
         self.t.start()
@@ -184,7 +201,14 @@ class Robot(Client):
             self.cozmo.wait_for_all_actions_completed()
             self.cozmo.play_anim_trigger(self.CozmoBehaviors[bhv])
 #            self.cozmo.wait_for_all_actions_completed()
-      
+
+    def subscribeToLoadingPageInfo(self, subscriber):
+        self.subscribers.append(subscriber)
+
+    def publishLoadingPageInfo(self, data):
+        self.message_queue.put(data)
+        for subscriber in self.subscribers:
+            subscriber.receiveLoadingPageInfo(data)
 
 if __name__ == '__main__':
     robot = Robot()
