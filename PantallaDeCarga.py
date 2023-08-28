@@ -1,11 +1,12 @@
 import sys
+import time
+
 from PySide2 import QtCore, QtWidgets
 from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
 from PySide2.QtGui import QFont, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 from qtpy import QtGui
-from learnblock.Cozmo import Robot
 
 class PantallaDeCarga(QWidget):
     def __init__(self):
@@ -32,18 +33,24 @@ class PantallaDeCarga(QWidget):
             sys.exit(-1)
         self.setWindowTitle("Pantalla de Carga")
         self.loadingBar = self.windowCarga.findChild(QProgressBar, 'loadingBar')
-        self.loadingBar.setValue(0)
+        QtWidgets.QApplication.processEvents()
+        self.loadingBar.setValue(1)
+        QtWidgets.QApplication.processEvents()
 
-    def setProgressingBarValue(self, robot):
-        self.loadingBar.setValue(robot.porcentajeCarga)
+
+    # def setProgressingBarValue(self, robot):
+    #     self.loadingBar.setValue(robot.porcentajeCarga)
 
     def receiveLoadingPageInfo(self, data):
         print("Valor que ha llegado a la pantalla de Carga: " + str(data))
+        time.sleep(1)
         self.loadingBar.setValue(data)
+        QtWidgets.QApplication.processEvents()
 
     def showCarga(self):
         self.windowCarga.show()
         self.formVisibleCarga = True
+        time.sleep(2)
 
     def hideCarga(self):
         self.windowCarga.hide()
@@ -55,3 +62,5 @@ class PantallaDeCarga(QWidget):
     def getLoadingBarValue(self):
         return self.loadingBar.value()
 
+    def closePantallaCarga(self):
+        self.windowCarga.close()

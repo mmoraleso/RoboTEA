@@ -38,8 +38,8 @@ class SesionEnCurso(QWidget):
         self.windowOpciones = windowOpciones
         self.setWindowTitle("Sesion En Curso")
         # self.windowOpciones.close()
-        self.pantallaDeCarga = PantallaDeCarga()
-        self.mostrarPantallas()
+        # self.pantallaDeCarga = PantallaDeCarga()
+        # self.mostrarPantallas()
         self.setupUiSesionEnCurso(self)
         self.setWindowFlag(Qt.Window)
         self.definirIconoBotones()
@@ -61,34 +61,22 @@ class SesionEnCurso(QWidget):
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
         self.usedFunctions = ['say_Text']
-        self.windowOpciones.close()
         # self.threaded = Threaded()
         # self.threaded.moveToThread()
         # self.threaded.start()
-
         self.instanciarCozmo()
+        self.windowOpciones.close()
         self.setVolumenInicial()
+        # self.pantallaDeCarga = self.robot.getPantallaCarga()
         self.mostrarPantallas()
         # self.app.aboutToQuit(self.threaded.stop)
 
 
     def mostrarPantallas(self):
-        if self.pantallaDeCarga.getLoadingBarValue() < 100:
-            if self.pantallaDeCarga.isVisibleCarga():
-                print("Hiding pantalla de carga")
-                self.pantallaDeCarga.hideCarga()
-            else:
-                print("Opening pantalla de carga")
-                self.windowOpciones.close()
-                self.pantallaDeCarga.windowCarga.show()
-        else :
-            print("abriendo sesion en curso")
-            self.pantallaDeCarga.windowCarga.close()
             if self.isVisibleSesion():
                 self.hideSesion()
             else:
                 self.showSesion()
-                self.windowOpciones.close()
 
     def showSesion(self):
         self.windowSesion.show()
@@ -207,7 +195,7 @@ class SesionEnCurso(QWidget):
     def instanciarCozmo(self):
         print(" -- Conexión con Cozmo --")
         try:
-            self.robot = Robot(availableFunctions=self.usedFunctions, pantallaCarga=self.pantallaDeCarga)
+            self.robot = Robot(availableFunctions=self.usedFunctions)
         except Exception as e:
             print("Problems creating a robot instance")
             traceback.print_exc()

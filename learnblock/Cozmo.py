@@ -3,6 +3,13 @@
 #import learnblock.Client as Client
 import queue
 import sys, os, numpy as np, PIL.Image as Image, PIL.ImageFilter as ImageFilter, io, cv2, paho.mqtt.client, threading, math
+import time
+
+from PySide2.QtCore import QThread
+from PySide2.QtWidgets import QApplication
+
+from PantallaDeCarga import PantallaDeCarga
+
 path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(path, ".."))
 
@@ -36,15 +43,17 @@ class Robot(Client):
         global cozmo
         global stopThread
         stopThread = False
+        self.app = QApplication.instance()
         Client.__init__(self)
-        print("client cozmo pantal")
-        # self.pantallaCarga.showCarga()
-        print("Pantalla de carga en cozmo: " + str(self.pantallaCargaClient))
+        self.pantallaDeCarga = PantallaDeCarga()
+        time.sleep(2)
+        self.mostrarPantallas()
+        self.pantallaDeCarga.receiveLoadingPageInfo(10)
         self.message_queue = queue.Queue()
         self.subscribers = []
-        self.subscribeToLoadingPageInfo(self.pantallaCargaClient)
-        self.publishLoadingPageInfo(25)
+        self.pantallaDeCarga.receiveLoadingPageInfo(25)
         print("publishin... " + str(25))
+        self.app.processEvents()
         # self.porcentajeCarga = 25
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
         self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
@@ -66,16 +75,21 @@ class Robot(Client):
         self.CozmoBehaviors = {}
         self.setBehaviors()
         # self.porcentajeCarga = 75
-        self.publishLoadingPageInfo(75)
+        self.app.processEvents()
+        # self.publishLoadingPageInfo(75)
+        self.pantallaDeCarga.receiveLoadingPageInfo(75)
+        self.app.processEvents()
         print("publishin... " + str(75))
         self.start()
-        self.publishLoadingPageInfo(100)
+        # self.publishLoadingPageInfo(100)
+        self.app.processEvents()
+        self.pantallaDeCarga.receiveLoadingPageInfo(100)
+        self.app.processEvents()
         print("publishin... " + str(100))
-        # self.porcentajeCarga = 100
+        self.pantallaDeCarga.closePantallaCarga()
 
     def connectToRobot(self):
-        # self.porcentajeCarga = 50
-        self.publishLoadingPageInfo(50)
+        self.pantallaDeCarga.receiveLoadingPageInfo(50)
         cozmoR.robot.Robot.drive_off_charger_on_connect = False
         self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program))
         self.t.start()
@@ -201,14 +215,17 @@ class Robot(Client):
             self.cozmo.wait_for_all_actions_completed()
             self.cozmo.play_anim_trigger(self.CozmoBehaviors[bhv])
 #            self.cozmo.wait_for_all_actions_completed()
+    def getPantallaCargaLoadingValue(self):
+        return self.pantallaDeCarga.getLoadingBarValue()
 
-    def subscribeToLoadingPageInfo(self, subscriber):
-        self.subscribers.append(subscriber)
-
-    def publishLoadingPageInfo(self, data):
-        self.message_queue.put(data)
-        for subscriber in self.subscribers:
-            subscriber.receiveLoadingPageInfo(data)
+    def mostrarPantallas(self):
+        if self.pantallaDeCarga.getLoadingBarValue() < 100:
+            if self.pantallaDeCarga.isVisibleCarga():
+                print("Hiding pantalla de carga")
+                self.pantallaDeCarga.hideCarga()
+            else:
+                print("Opening pantalla de carga")
+                self.pantallaDeCarga.showCarga()
 
 if __name__ == '__main__':
     robot = Robot()

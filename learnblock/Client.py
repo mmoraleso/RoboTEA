@@ -62,8 +62,6 @@ class MetaClient(type):
         print("kwatrgs = " + str(kwargs))
         if "availableFunctions" in kwargs:
             del kwargs["availableFunctions"]
-        if "pantallaCarga" in kwargs:
-            del kwargs["pantallaCarga"]
         obj.__init__(*args, **kwargs)
         return obj
 
@@ -74,12 +72,10 @@ class Client(Thread, metaclass=MetaClient):
         usedFuncts = []
         device = []
         print("kwatrgs = " + str(kwargs))
-        if "pantallaCarga" in kwargs:
-            pantallaCarga = kwargs.pop('pantallaCarga')
         if "availableFunctions" in kwargs:
             usedFuncts = kwargs.pop('availableFunctions')
         print("availableFunctions", usedFuncts)
-        print("pantallaDeCarga", str(pantallaCarga))
+        # print("pantallaDeCarga", str(pantallaCarga))
         functions = getFuntions()
         #k= nombre de funcion/v=funcion
         for k, v in iter(functions.items()):
@@ -91,7 +87,6 @@ class Client(Thread, metaclass=MetaClient):
                     device.append(v["type"])
         instance = super(Client, cls).__new__(cls, *args, **kwargs)
         setattr(instance,'__devices',device)
-        setattr(instance, '__pantallaCarga', pantallaCarga)
         return instance
 
     def __init__(self,_miliseconds=100):
@@ -99,9 +94,9 @@ class Client(Thread, metaclass=MetaClient):
         Thread.__init__(self)
         self.__stop_event = Event() 
         self.__devices=getattr(self,'__devices')
-        self.pantallaCargaClient =getattr(self, '__pantallaCarga')
+        # self.pantallaCargaClient =getattr(self, '__pantallaCarga')
         print("Used devices: ",self.__devices)
-        print("Pantalla Carga init client: ", self.pantallaCargaClient)
+        # print("Pantalla Carga init client: ", self.pantallaCargaClient)
 
         # Variables of Emotion Recognition
         self.__emotion_current_exist = False
@@ -135,8 +130,6 @@ class Client(Thread, metaclass=MetaClient):
 
         self.__period = timedelta(milliseconds=_miliseconds)
 
-    def getPantallaCarga(self):
-        return self.pantallaCargaClient
     def __launchComponents(self):
         global IceLoaded
         if IceLoaded:
