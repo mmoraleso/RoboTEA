@@ -49,12 +49,9 @@ class Robot(Client):
         time.sleep(2)
         self.mostrarPantallas()
         self.pantallaDeCarga.receiveLoadingPageInfo(10)
-        self.message_queue = queue.Queue()
-        self.subscribers = []
         self.pantallaDeCarga.receiveLoadingPageInfo(25)
         print("publishin... " + str(25))
         self.app.processEvents()
-        # self.porcentajeCarga = 25
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
         self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
         self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.deviceResetGyroscope), "Z_AXIS")
@@ -74,14 +71,11 @@ class Robot(Client):
         self.last_pose_read = 0
         self.CozmoBehaviors = {}
         self.setBehaviors()
-        # self.porcentajeCarga = 75
         self.app.processEvents()
-        # self.publishLoadingPageInfo(75)
         self.pantallaDeCarga.receiveLoadingPageInfo(75)
         self.app.processEvents()
         print("publishin... " + str(75))
         self.start()
-        # self.publishLoadingPageInfo(100)
         self.app.processEvents()
         self.pantallaDeCarga.receiveLoadingPageInfo(100)
         self.app.processEvents()

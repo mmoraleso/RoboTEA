@@ -61,15 +61,10 @@ class SesionEnCurso(QWidget):
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
         self.usedFunctions = ['say_Text']
-        # self.threaded = Threaded()
-        # self.threaded.moveToThread()
-        # self.threaded.start()
         self.instanciarCozmo()
         self.windowOpciones.close()
         self.setVolumenInicial()
-        # self.pantallaDeCarga = self.robot.getPantallaCarga()
         self.mostrarPantallas()
-        # self.app.aboutToQuit(self.threaded.stop)
 
 
     def mostrarPantallas(self):
