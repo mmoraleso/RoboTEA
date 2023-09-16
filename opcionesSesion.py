@@ -1,3 +1,5 @@
+import os
+import pathlib
 import sys
 from PySide2 import QtCore
 from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
@@ -5,14 +7,14 @@ from PySide2.QtGui import QFont, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 from SesionEnCurso import SesionEnCurso
-from db.queries import darAlta, actualizarDatosNiños, getById, getAll
+from db.queries import darAlta, actualizarDatosNiños, getById, getAll, getAllEmociones, getAllPreguntas
 
 
 class OpcionesSesion(QWidget):
     def __init__(self):
         QWidget.__init__(self)
         self.setupUi(self)
-        self.cargarDatosComboBox()
+        self.cargarDatos()
         self.setWindowFlag(Qt.Window)
         self.formVisible = False
         self.botonAceptar.clicked.connect(self.mostrarSesion)
@@ -52,29 +54,53 @@ class OpcionesSesion(QWidget):
             print(self.windowOpciones.errorString())
             sys.exit(-1)
 
-        self.actividad1CB = self.windowOpciones.findChild(QComboBox, 'actividad1_CB')
-        self.actividad1CB.addItems(['Actividad1', 'Actividad2', 'Actividad3'])
-        self.actividad2CB = self.windowOpciones.findChild(QComboBox, 'actividad2_CB')
-        self.actividad2CB.addItems(['Actividad1', 'Actividad2', 'Actividad3'])
-        self.actividad3CB = self.windowOpciones.findChild(QComboBox, 'actividad3_CB')
-        self.actividad3CB.addItems(['Actividad1', 'Actividad2', 'Actividad3'])
+        self.historiasCB = self.windowOpciones.findChild(QComboBox, 'actividad1_CB')
+        self.emocionesCB = self.windowOpciones.findChild(QComboBox, 'actividad2_CB')
+        self.preguntasCB = self.windowOpciones.findChild(QComboBox, 'actividad3_CB')
 
         self.botonAceptar = self.windowOpciones.findChild(QPushButton, 'aceptar_opciones_button')
         self.botonCancelar = self.windowOpciones.findChild(QPushButton, 'cancelar_opciones_button')
 
 
-    def cargarDatosComboBox(self):
+    def cargarDatos(self):
+        self.cargarDatosHistorias()
+        self.cargarDatosNiñosComboBox()
+        self.cargarDatosEmocionesComboBox()
+        self.cargarDatosPreguntasComboBox()
+    def cargarDatosNiñosComboBox(self):
         self.childrenComboBox = self.windowOpciones.findChild(QComboBox, 'childSesion_CB')
         datosNiños = getAll()
+        if(datosNiños):
+            for(i, fila) in enumerate(datosNiños):
+                self.childrenComboBox.addItem(fila[1])
 
-        for(i, fila) in enumerate(datosNiños):
-            self.childrenComboBox.addItem(fila[1])
+    def cargarDatosEmocionesComboBox(self):
+        emociones = getAllEmociones()
+        if(emociones):
+            for(i, fila) in enumerate(emociones):
+                self.emocionesCB.addItem(fila[1])
+
+    def cargarDatosPreguntasComboBox(self):
+        preguntas = getAllPreguntas()
+        if (preguntas):
+            for(i, fila) in enumerate(preguntas):
+                self.preguntasCB.addItem(fila[1])
+
+    def cargarDatosHistorias(self):
+        historiasUrl = os.getcwd() + '/historias'
+        directorioHistorias = os.listdir(historiasUrl)
+        listadoActividades = []
+        for fichero in directorioHistorias:
+            if os.path.isfile(os.path.join(historiasUrl, fichero)) and fichero.endswith('.txt'):
+                listadoActividades.append(fichero[:-4])
+        if(listadoActividades):
+            self.historiasCB.addItems(listadoActividades)
 
     def guardarDatos(self):
 
-        actividad1 = self.actividad1CB.currentText()
-        actividad2 = self.actividad2CB.currentText()
-        actividad3 = self.actividad3CB.currentText()
+        actividad1 = self.historiasCB.currentText()
+        actividad2 = self.emocionesCB.currentText()
+        actividad3 = self.preguntas.currentText()
         niñoSesion = self.childrenComboBox.currentText()
 
         self.datosSesion = [actividad1, actividad2, actividad3, niñoSesion]

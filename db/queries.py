@@ -91,3 +91,102 @@ def deleteById(_id):
         if con:
             cursorObj.close()
             con.close()
+
+def darAltaEmociones(data):
+    print("Se va a realizar una alta")
+    con = crearConexion()
+    query = """INSERT INTO emociones (nombreEmocion) VALUES (?)"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query, data)
+        con.commit()
+        print("Se ha dado de alta a una emoción")
+        return True
+    except Error as error:
+        print("Error al dar de alta :" + str(error) + " una emocion")
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
+
+def getAllEmociones():
+    con = crearConexion()
+    query = """SELECT id, nombreEmocion FROM emociones"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query)
+        children = cursorObj.fetchall()
+        print("Se han obtenido todas las emociones" )
+        return children
+    except Error as error:
+        print("Error al obtener todo:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
+
+def deleteEmocionesById(_id):
+    con = crearConexion()
+    query = f"""DELETE FROM emociones WHERE id = {_id}"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query)
+        con.commit()
+        print("Se ha eliminado la emocion con id = " + str(_id))
+        return True
+    except Error as error:
+        print("Error al borrar:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
+
+
+def darAltaPregunta(data):
+    print("Se va a realizar una alta")
+    con = crearConexion()
+    query = """INSERT INTO preguntas (titulo, pregunta) VALUES (?,?)"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query, data)
+        con.commit()
+        print("Se ha dado de alta a una pregunta")
+        return True
+    except Error as error:
+        print("Error al dar de alta :" + str(error) + " una pregunta")
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
+
+def getAllPreguntas():
+    con = crearConexion()
+    query = """SELECT * FROM preguntas"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query)
+        children = cursorObj.fetchall()
+        print("Se han obtenido todas las preguntas" )
+        return children
+    except Error as error:
+        print("Error al obtener todo:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
+
+def deletePreguntasById(_id):
+    con = crearConexion()
+    query = f"""DELETE FROM preguntas WHERE id = {_id}"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query)
+        con.commit()
+        print("Se ha eliminado la emocion con id = " + str(_id))
+        return True
+    except Error as error:
+        print("Error al borrar:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()

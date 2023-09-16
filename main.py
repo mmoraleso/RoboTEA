@@ -8,6 +8,8 @@ from PySide2.QtGui import QFont, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 from PySide2 import QtWidgets
+
+from EleccionEditor import EleccionEditor
 from darAlta import DarAltaClass
 from listadoAltas import ListadoAltas
 from opcionesSesion import OpcionesSesion
@@ -49,10 +51,10 @@ class MainClass(QtWidgets.QMainWindow):
         nuevaSesionButton.setIcon(iconoSesionNueva)
 
         #imagen boton Editar Ordenes Cozmo
-        editarOrdenesButton = self.mainWindow.findChild(QPushButton, 'editarOrdenesButton')
-        iconoEditarOrdenes = QIcon()
-        iconoEditarOrdenes.addFile(absolute_path+"./interfaz/iconos/editar_cozmo_150.png", QSize(), QIcon.Normal, QIcon.Off)
-        editarOrdenesButton.setIcon(iconoEditarOrdenes)
+        editarOrdenesCozmoButton = self.mainWindow.findChild(QPushButton, 'editarOrdenesButton')
+        iconoEditarCozmoOrdenes = QIcon()
+        iconoEditarCozmoOrdenes.addFile(absolute_path+"./interfaz/iconos/editar_cozmo_150.png", QSize(), QIcon.Normal, QIcon.Off)
+        editarOrdenesCozmoButton.setIcon(iconoEditarCozmoOrdenes)
 
         #imagen boton Dar de alta niños
         darAltaButton = self.mainWindow.findChild(QPushButton, 'darAltaNinosButton')
@@ -68,7 +70,10 @@ class MainClass(QtWidgets.QMainWindow):
 
 
         self.childrenList_window = ListadoAltas(self)
-        editarOrdenesButton.clicked.connect(self.mostrarListadoNiños)
+        darAltaButton.clicked.connect(self.mostrarListadoNiños)
+
+        self.eleccionEditorWindow = EleccionEditor()
+        editarOrdenesCozmoButton.clicked.connect(self.eleccionEditor)
 
 
         #imagen boton ayuda
@@ -83,6 +88,12 @@ class MainClass(QtWidgets.QMainWindow):
         self.mainWindow.show()
         darAltaButton.clicked.connect(self.darAltaNiños)
         sys.exit(self.app.exec_())
+
+    def eleccionEditor(self):
+        if self.eleccionEditorWindow.isVisible():
+            self.eleccionEditorWindow.hide()
+        else:
+            self.eleccionEditorWindow.show()
 
     def darAltaNiños(self):
         if self.darAlta_window.isVisible():
