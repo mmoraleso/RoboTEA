@@ -5,6 +5,8 @@ from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
 from PySide2.QtGui import QFont, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
+
+from CrearEditarHistoriaPregunta import CrearEditarHistoriaPregunta
 from db.queries import getAll, deleteById, getAllPreguntas, deletePreguntasById
 from editarAlta import EditarAlta
 
@@ -19,9 +21,18 @@ class ListadoHistoriasPreguntas(QWidget):
         self.cargarDatosTable()
         self.setWindowFlag(Qt.Window)
         self.formVisible = False
+        self.crearDataButton.clicked.connect(self.crearNuevaHP)
 
-    def clickAceptar(self):
-        self.guardarDatos()
+    def crearNuevaHP(self):
+        if self.accionSeleccionada == 'P':
+            self.editarDatosWindow = CrearEditarHistoriaPregunta('C', 'P','', '', '', self)
+        else:
+            self.editarDatosWindow = CrearEditarHistoriaPregunta('C', 'H', '', '', '', self)
+        if self.editarDatosWindow.isVisible():
+            self.editarDatosWindow.hide()
+        else:
+            self.editarDatosWindow.show()
+        # self.actualizarDatosTabla()
 
     def show(self):
         self.windowListaH.show()
@@ -57,12 +68,20 @@ class ListadoHistoriasPreguntas(QWidget):
 
     def pulsarEditar(self):
         filaPulsada = self.tabla.currentRow()
-        id = self.tabla.item(filaPulsada, 0).text()
-        self.editarDatosWindow = EditarAlta(id, self)
+        if self.accionSeleccionada == 'P':
+            id = self.tabla.item(filaPulsada, 0).text()
+            titulo = self.tabla.item(filaPulsada, 1).text()
+            contenido = self.tabla.item(filaPulsada, 2).text()
+            self.editarDatosWindow = CrearEditarHistoriaPregunta('E', 'P',id, contenido, titulo, self)
+        else:
+            titulo = self.tabla.item(filaPulsada, 0).text()
+            contenido = self.tabla.item(filaPulsada, 1).text()
+            self.editarDatosWindow = CrearEditarHistoriaPregunta('E', 'H', titulo, contenido, '', self)
         if self.editarDatosWindow.isVisible():
             self.editarDatosWindow.hide()
         else:
             self.editarDatosWindow.show()
+        self.actualizarDatosTabla()
 
 
     def pulsarEliminar(self):
@@ -100,7 +119,8 @@ class ListadoHistoriasPreguntas(QWidget):
             deleteButton.clicked.connect(self.pulsarEliminar)
 
             for (j, columna) in enumerate(fila):
-                self.tabla.setItem(i, j, QTableWidgetItem(str(columna)))
+                self.tabla.setItem(i, j, QTableWidgetItem(str(columna).replace("\\n", "\r\n").replace(",", "")\
+                .replace("'", "").replace("[", "").replace("]", "")))
                 item = self.tabla.item(i, j)
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
 

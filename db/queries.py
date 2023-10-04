@@ -190,3 +190,21 @@ def deletePreguntasById(_id):
         if con:
             cursorObj.close()
             con.close()
+
+def actualizarPregunta(_id, data):
+    con = crearConexion()
+    print("ID que llega al actualizar: " + str(_id))
+    query = f"""UPDATE preguntas SET titulo = ?, pregunta = ? WHERE id = {_id}"""
+    try:
+        cursorObj = con.cursor()
+        datosquery = (data, _id)
+        cursorObj.execute(query, data)
+        con.commit()
+        print("Se ha dado actualizado la pregunta con id = " + str(_id))
+        return True
+    except Error as error:
+        print("Error al actualizar:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
