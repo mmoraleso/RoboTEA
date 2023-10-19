@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>935</width>
-    <height>814</height>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -185,37 +185,11 @@
             <property name="lineWidth">
              <number>0</number>
             </property>
-            <widget class="QPushButton" name="darAltaNinosButton">
-             <property name="geometry">
-              <rect>
-               <x>200</x>
-               <y>330</y>
-               <width>162</width>
-               <height>156</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="iconos/recursos.qrc">
-               <normaloff>:/iconos/icons8-niños-150.png</normaloff>:/iconos/icons8-niños-150.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>150</width>
-               <height>150</height>
-              </size>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
-             </property>
-            </widget>
             <widget class="QLabel" name="nuevasesion_label">
              <property name="geometry">
               <rect>
-               <x>240</x>
-               <y>220</y>
+               <x>250</x>
+               <y>250</y>
                <width>117</width>
                <height>17</height>
               </rect>
@@ -235,7 +209,7 @@
              <property name="geometry">
               <rect>
                <x>210</x>
-               <y>50</y>
+               <y>80</y>
                <width>162</width>
                <height>156</height>
               </rect>
@@ -257,75 +231,11 @@
               <bool>true</bool>
              </property>
             </widget>
-            <widget class="QLabel" name="label">
-             <property name="geometry">
-              <rect>
-               <x>220</x>
-               <y>500</y>
-               <width>127</width>
-               <height>17</height>
-              </rect>
-             </property>
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Dar de alta niño/a</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="editarInfoButton">
-             <property name="geometry">
-              <rect>
-               <x>550</x>
-               <y>330</y>
-               <width>162</width>
-               <height>156</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="iconos/recursos.qrc">
-               <normaloff>:/iconos/icons8-niños-editar-150.png</normaloff>:/iconos/icons8-niños-editar-150.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>150</width>
-               <height>150</height>
-              </size>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
-             </property>
-            </widget>
-            <widget class="QLabel" name="label_2">
-             <property name="geometry">
-              <rect>
-               <x>560</x>
-               <y>500</y>
-               <width>151</width>
-               <height>17</height>
-              </rect>
-             </property>
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Editar datos niños/as</string>
-             </property>
-            </widget>
             <widget class="QLabel" name="nuevasesion_label_2">
              <property name="geometry">
               <rect>
                <x>560</x>
-               <y>220</y>
+               <y>250</y>
                <width>157</width>
                <height>17</height>
               </rect>
@@ -344,8 +254,8 @@
             <widget class="QPushButton" name="editarOrdenesButton">
              <property name="geometry">
               <rect>
-               <x>560</x>
-               <y>50</y>
+               <x>540</x>
+               <y>80</y>
                <width>162</width>
                <height>156</height>
               </rect>

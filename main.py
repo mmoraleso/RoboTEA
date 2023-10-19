@@ -56,21 +56,24 @@ class MainClass(QtWidgets.QMainWindow):
         iconoEditarCozmoOrdenes.addFile(absolute_path+"./interfaz/iconos/editar_cozmo_150.png", QSize(), QIcon.Normal, QIcon.Off)
         editarOrdenesCozmoButton.setIcon(iconoEditarCozmoOrdenes)
 
-        #imagen boton Dar de alta niños
-        darAltaButton = self.mainWindow.findChild(QPushButton, 'darAltaNinosButton')
-        iconoDarAlta = QIcon()
-        iconoDarAlta.addFile(absolute_path+"./interfaz/iconos/icons8-niños-150.png", QSize(), QIcon.Normal, QIcon.Off)
-        darAltaButton.setIcon(iconoDarAlta)
-
-        #imagen boton Editar informacion niños
-        editarOrdenesButton = self.mainWindow.findChild(QPushButton, 'editarInfoButton')
-        iconoEditarOrdenes = QIcon()
-        iconoEditarOrdenes.addFile(absolute_path+"./interfaz/iconos/icons8-niños-editar-150.png", QSize(), QIcon.Normal, QIcon.Off)
-        editarOrdenesButton.setIcon(iconoEditarOrdenes)
-
-
-        self.childrenList_window = ListadoAltas(self)
-        darAltaButton.clicked.connect(self.mostrarListadoNiños)
+        # #imagen boton Dar de alta niños
+        # darAltaButton = self.mainWindow.findChild(QPushButton, 'darAltaNinosButton')
+        # iconoDarAlta = QIcon()
+        # iconoDarAlta.addFile(absolute_path+"./interfaz/iconos/icons8-niños-150.png", QSize(), QIcon.Normal, QIcon.Off)
+        # darAltaButton.setIcon(iconoDarAlta)
+        #
+        # #imagen boton Editar informacion niños
+        # editarOrdenesButton = self.mainWindow.findChild(QPushButton, 'editarInfoButton')
+        # iconoEditarOrdenes = QIcon()
+        # iconoEditarOrdenes.addFile(absolute_path+"./interfaz/iconos/icons8-niños-editar-150.png", QSize(), QIcon.Normal, QIcon.Off)
+        # editarOrdenesButton.setIcon(iconoEditarOrdenes)
+        #
+        #
+        # self.childrenList_window = ListadoAltas(self)
+        # darAltaButton.clicked.connect(self.mostrarListadoNiños)
+        # self.darAlta_window = DarAltaClass(self.childrenList_window)
+        self.mainWindow.show()
+        # darAltaButton.clicked.connect(self.darAltaNiños)
 
         self.eleccionEditorWindow = EleccionEditor()
         editarOrdenesCozmoButton.clicked.connect(self.eleccionEditor)
@@ -84,9 +87,6 @@ class MainClass(QtWidgets.QMainWindow):
 
         self.opcionesSesionWindow = OpcionesSesion()
         nuevaSesionButton.clicked.connect(self.mostrarOpcionesSesion)
-        self.darAlta_window = DarAltaClass(self.childrenList_window)
-        self.mainWindow.show()
-        darAltaButton.clicked.connect(self.darAltaNiños)
         sys.exit(self.app.exec_())
 
     def eleccionEditor(self):
@@ -95,17 +95,17 @@ class MainClass(QtWidgets.QMainWindow):
         else:
             self.eleccionEditorWindow.show()
 
-    def darAltaNiños(self):
-        if self.darAlta_window.isVisible():
-            self.darAlta_window.hide()
-        else:
-            self.darAlta_window.show()
-
-    def mostrarListadoNiños(self):
-        if self.childrenList_window.isVisible():
-            self.childrenList_window.hide()
-        else:
-            self.childrenList_window.show()
+    # def darAltaNiños(self):
+    #     if self.darAlta_window.isVisible():
+    #         self.darAlta_window.hide()
+    #     else:
+    #         self.darAlta_window.show()
+    #
+    # def mostrarListadoNiños(self):
+    #     if self.childrenList_window.isVisible():
+    #         self.childrenList_window.hide()
+    #     else:
+    #         self.childrenList_window.show()
 
     def mostrarOpcionesSesion(self):
         if self.opcionesSesionWindow.isVisible():

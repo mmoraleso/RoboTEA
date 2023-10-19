@@ -4,6 +4,8 @@ from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
 from PySide2.QtGui import QFont, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
+
+from darAlta import DarAltaClass
 from db.queries import getAll, deleteById
 from editarAlta import EditarAlta
 
@@ -11,12 +13,14 @@ from editarAlta import EditarAlta
 class ListadoAltas(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent=None)
+        self.crearChildButton = None
         self.botonEditarPulsado = False
         self.setupUi(self)
         self.tabla = self.windowLista.findChild(QTableWidget, 'tableWidget')
         self.cargarDatosTable()
         self.setWindowFlag(Qt.Window)
         self.formVisible = False
+        self.crearChildButton.clicked.connect(self.pulsarCrearChild)
 
     def clickAceptar(self):
         self.guardarDatos()
@@ -42,6 +46,7 @@ class ListadoAltas(QWidget):
         self.windowLista = loaderAlta.load(ui_fileListado)
         ui_fileListado.close()
 
+        self.crearChildButton = self.windowLista.findChild(QPushButton, 'addNino_Button')
         if not self.windowLista:
             print(self.windowLista.errorString())
             sys.exit(-1)
@@ -54,6 +59,13 @@ class ListadoAltas(QWidget):
             self.editarDatosWindow.hide()
         else:
             self.editarDatosWindow.show()
+
+    def pulsarCrearChild(self):
+        self.crearChildWindow = DarAltaClass(self)
+        if self.crearChildWindow.isVisible():
+            self.crearChildWindow.hide()
+        else:
+            self.crearChildWindow.show()
 
 
     def pulsarEliminar(self):
