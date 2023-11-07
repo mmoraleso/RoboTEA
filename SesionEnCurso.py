@@ -60,7 +60,7 @@ class SesionEnCurso(QWidget):
         self.datosSesion = datosSesion
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
-        self.usedFunctions = ['say_Text']
+        self.usedFunctions = ['say_Text', 'camera', 'get_image']
         self.instanciarCozmo()
         self.windowOpciones.close()
         self.setVolumenInicial()
@@ -68,10 +68,10 @@ class SesionEnCurso(QWidget):
 
 
     def mostrarPantallas(self):
-            if self.isVisibleSesion():
-                self.hideSesion()
-            else:
-                self.showSesion()
+        if self.isVisibleSesion():
+            self.hideSesion()
+        else:
+            self.showSesion()
 
     def showSesion(self):
         self.windowSesion.show()
@@ -207,6 +207,7 @@ class SesionEnCurso(QWidget):
 
     def comprobarEmociones(self):
         print("Comprobar emociones")
+        self.capturarApriltag()
         if self.pausado == False:
             self.estado = 1
             self.estado += 1
@@ -260,6 +261,16 @@ class SesionEnCurso(QWidget):
 
         print("Cozmo ha terminado de contar la situación.")
         self.pausado = True
+
+    def capturarApriltag(self):
+        posTag = self.robot.getPosTag()
+        print("Que devuelve getPosTag: " + str(posTag))
+        list = self.robot.listTags()
+        print("Que devuelve getPosTag: " + str(list))
+        detect = self.robot.__detectAprilTags()
+        print("Que devuelve getPosTag: " + str(detect))
+        imagene = self.robot.getImage()
+        print("Que devuelve image: " + str(imagene))
 
 
 

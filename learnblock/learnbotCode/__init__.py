@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import
 import os, json
 
-file = os.path.join(os.getenv('HOME'), ".learnblock", "AprilDict.json")
+file = os.path.join(os.getenv('HOME'), "jsonRobotea", "AprilDict.json")
 
 def getAprilTextDict():
     if os.path.exists(file):

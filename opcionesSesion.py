@@ -100,7 +100,7 @@ class OpcionesSesion(QWidget):
 
         actividad1 = self.historiasCB.currentText()
         actividad2 = self.emocionesCB.currentText()
-        actividad3 = self.preguntas.currentText()
+        actividad3 = self.preguntasCB.currentText()
         niñoSesion = self.childrenComboBox.currentText()
 
         self.datosSesion = [actividad1, actividad2, actividad3, niñoSesion]

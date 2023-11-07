@@ -46,6 +46,8 @@ class Robot(Client):
         self.app = QApplication.instance()
         Client.__init__(self)
         self.pantallaDeCarga = PantallaDeCarga()
+        time.sleep(2)
+        self.mostrarPantallas()
         self.pantallaDeCarga.receiveLoadingPageInfo(10)
         self.pantallaDeCarga.receiveLoadingPageInfo(25)
         print("publishin... " + str(25))
