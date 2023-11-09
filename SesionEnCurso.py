@@ -9,28 +9,13 @@ from PySide2.QtWidgets import *
 from qtpy import QtGui
 
 from PantallaDeCarga import PantallaDeCarga
-from db.queries import darAlta, actualizarDatosNiños, getById, getAll
+from db.queries import darAlta, actualizarDatosNiños, getById, getAll, getPreguntaById
 
 import sys, os, time, traceback
 sys.path.insert(0, os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
 from learnblock.Cozmo import Robot
 import signal
 import sys
-
-#global porcentajeCarga
-# class Threaded(QThread):
-#     result = pyqtSignal(int)
-#     def __init__(self, parent=None, **kwargs):
-#         super().__init__(parent, **kwargs)
-#
-#     def run(self):
-#         self.keepGoing = True
-#         while self.keepGoing:
-#             print("test")
-#             self.msleep(1)
-#
-#     def stop(self):
-#         self.keepGoing = False
 
 class SesionEnCurso(QWidget):
     def __init__(self, datosSesion, windowOpciones):
@@ -58,13 +43,18 @@ class SesionEnCurso(QWidget):
         self.lineasFichero = {}; #listado con las lineas del fichero de situación
         self.lineasSinDecir = {}; #listado de lineas que todavía no se han dicho
         self.datosSesion = datosSesion
+        self.historia = datosSesion[0]
+        self.pregunta = datosSesion[1]
+        self.emocion = datosSesion[2]
+        self.idAprilTagEmocion = datosSesion[4]
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
-        self.usedFunctions = ['say_Text', 'camera', 'get_image']
+        self.usedFunctions = ['say_Text', 'get_image', 'cozmoDances', 'expressSadness', 'express', 'cozmoIdle']
         self.instanciarCozmo()
         self.windowOpciones.close()
         self.setVolumenInicial()
         self.mostrarPantallas()
+        self.emocionCorrecta = False
 
 
     def mostrarPantallas(self):
@@ -198,7 +188,7 @@ class SesionEnCurso(QWidget):
 
     def contarSituacion(self):
         print("Contado situación")
-        self.leerSituacion('historia1')
+        self.leerSituacion(self.historia)
 
         if self.pausado == False:
             self.estado = 0
@@ -216,12 +206,26 @@ class SesionEnCurso(QWidget):
     def cozmoPregunta(self):
         self.estado = 2
         print("Cozmo pregunta")
+        # obtener cuerpo pregunta
+        cuerpoPregunta = getPreguntaById(self.pregunta)[0]
+        self.app.processEvents()
+        self.robot.say_Text(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]))
+        self.robot.cozmo.wait_for_all_actions_completed()
+        print(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]))
         if self.pausado == False:
             self.estado += 1
             self.cambiarEstado()
 
     def darRecompensa(self):
         print("Dando recompensa")
+        if self.emocionCorrecta:
+            print("EMocion correcta")
+            print("baila:")
+            self.robot.dance()
+        else:
+            print("sadness:")
+            self.robot.idle()
+
         if self.pausado == False:
             self.estado = 3
             self.estado += 1
@@ -263,14 +267,15 @@ class SesionEnCurso(QWidget):
         self.pausado = True
 
     def capturarApriltag(self):
-        posTag = self.robot.getPosTag()
-        print("Que devuelve getPosTag: " + str(posTag))
-        list = self.robot.listTags()
-        print("Que devuelve getPosTag: " + str(list))
-        detect = self.robot.__detectAprilTags()
-        print("Que devuelve getPosTag: " + str(detect))
-        imagene = self.robot.getImage()
-        print("Que devuelve image: " + str(imagene))
+        # apriltagImagen = self.robot.getAprilTagId()
+        # print("Que devuelve getAprilTagId: " + str(apriltagImagen))
+        apriltagImagen = self.robot.getAprilTagId()
+        print("Apriltag de la imagen: " + str(apriltagImagen))
+        if apriltagImagen == self.idAprilTagEmocion:
+            self.emocionCorrecta = True
+        else:
+            self.emocionCorrecta = False
+
 
 
 

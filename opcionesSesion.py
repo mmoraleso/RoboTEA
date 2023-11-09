@@ -75,15 +75,15 @@ class OpcionesSesion(QWidget):
                 self.childrenComboBox.addItem(fila[1])
 
     def cargarDatosEmocionesComboBox(self):
-        emociones = getAllEmociones()
-        if(emociones):
-            for(i, fila) in enumerate(emociones):
+        self.emociones = getAllEmociones()
+        if(self.emociones):
+            for(i, fila) in enumerate(self.emociones):
                 self.emocionesCB.addItem(fila[1])
 
     def cargarDatosPreguntasComboBox(self):
-        preguntas = getAllPreguntas()
-        if (preguntas):
-            for(i, fila) in enumerate(preguntas):
+        self.preguntas = getAllPreguntas()
+        if (self.preguntas):
+            for(i, fila) in enumerate(self.preguntas):
                 self.preguntasCB.addItem(fila[1])
 
     def cargarDatosHistorias(self):
@@ -98,12 +98,16 @@ class OpcionesSesion(QWidget):
 
     def guardarDatos(self):
 
-        actividad1 = self.historiasCB.currentText()
-        actividad2 = self.emocionesCB.currentText()
-        actividad3 = self.preguntasCB.currentText()
+        indexEmociones = self.emocionesCB.currentIndex()
+        idAprilTagEmocion = self.emociones[indexEmociones][2]
+        indexPreguntas = self.preguntasCB.currentIndex()
+        idPregunta = self.preguntas[indexPreguntas][0]
+        historia = self.historiasCB.currentText()
+        emocion = self.emocionesCB.currentText()
+        pregunta = self.preguntasCB.currentText()
         niñoSesion = self.childrenComboBox.currentText()
 
-        self.datosSesion = [actividad1, actividad2, actividad3, niñoSesion]
+        self.datosSesion = [historia, idPregunta, emocion, niñoSesion, idAprilTagEmocion]
 
     def mostrarSesion(self):
         self.guardarDatos()

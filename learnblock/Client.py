@@ -530,10 +530,10 @@ class Client(Thread, metaclass=MetaClient):
                 frame.image = np.fromstring(img, np.uint8)
                 aprils = self.__apriltagProxy.processimage(frame)
                 # img[0:256, 0:256] = [255, 0, 0]
-                print("NPArray " + str(img))
+                # print("NPArray " + str(img))
                 imgen = Img.fromarray(img, 'RGB')
                 imgen.save('my.png')
-                print("IMAGE " + str(img))
+                # print("IMAGE " + str(img))
                 self.__apriltag_current_exist = True
                 self.__listAprilIDs = [a.id for a in aprils]
                 self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
@@ -548,6 +548,12 @@ class Client(Thread, metaclass=MetaClient):
         self.__detectAprilTags(_keyCam)
         return id in self.__listAprilIDs
 
+    def idle(self):
+        self.cozmoIdle()
+
+    def dance(self):
+        self.cozmoDances()
+
     def getPosTag(self, id=None, _keyCam="ROBOT"):
         time.sleep(0)
         self.__detectAprilTags(_keyCam)
@@ -560,10 +566,19 @@ class Client(Thread, metaclass=MetaClient):
             return self.__posAprilTags[id]
         else:
             return None
+    def getAprilTagId(self, _keyCam="ROBOT"):
+        self.__detectAprilTags(_keyCam)
+        if len(self.__listAprilIDs) > 0:
+            return self.__listAprilIDs[0]
+        else:
+            return None
 
     def listTags(self, _keyCam="ROBOT"):
         self.__detectAprilTags(_keyCam)
-        return self.__listAprilIDs
+        if len(self.__listAprilIDs) > 0:
+            return self.__listAprilIDs
+        else:
+            return []
 
     def getEmotions(self, _keyCam = "ROBOT"):
         if self.__emotionRecRunning and not self.__emotion_current_exist and _keyCam in self.__Cameras:

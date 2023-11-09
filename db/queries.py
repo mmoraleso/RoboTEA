@@ -111,7 +111,7 @@ def darAltaEmociones(data):
 
 def getAllEmociones():
     con = crearConexion()
-    query = """SELECT id, nombreEmocion FROM emociones"""
+    query = """SELECT id, nombreEmocion, aprilTag FROM emociones"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query)
@@ -182,7 +182,7 @@ def deletePreguntasById(_id):
         cursorObj = con.cursor()
         cursorObj.execute(query)
         con.commit()
-        print("Se ha eliminado la emocion con id = " + str(_id))
+        print("Se ha eliminado la pregunta con id = " + str(_id))
         return True
     except Error as error:
         print("Error al borrar:" + str(error))
@@ -190,7 +190,21 @@ def deletePreguntasById(_id):
         if con:
             cursorObj.close()
             con.close()
-
+def getPreguntaById(_id):
+    con = crearConexion()
+    query = f"""SELECT pregunta FROM preguntas WHERE id = {_id}"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query)
+        pregunta = cursorObj.fetchone()
+        print("Se ha obtenido la pregunta con id = " + str(_id))
+        return pregunta
+    except Error as error:
+        print("Error al get Pregunta By Id:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
 def actualizarPregunta(_id, data):
     con = crearConexion()
     print("ID que llega al actualizar: " + str(_id))

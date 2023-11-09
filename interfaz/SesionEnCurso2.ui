@@ -163,7 +163,7 @@
        <widget class="QPushButton" name="botonPregunta">
         <property name="geometry">
          <rect>
-          <x>520</x>
+          <x>320</x>
           <y>110</y>
           <width>162</width>
           <height>156</height>
@@ -241,7 +241,7 @@
        <widget class="QPushButton" name="botonEmociones">
         <property name="geometry">
          <rect>
-          <x>320</x>
+          <x>520</x>
           <y>110</y>
           <width>162</width>
           <height>156</height>
@@ -338,7 +338,7 @@
        <widget class="QLabel" name="label_2">
         <property name="geometry">
          <rect>
-          <x>320</x>
+          <x>520</x>
           <y>80</y>
           <width>160</width>
           <height>17</height>
@@ -357,7 +357,7 @@
        <widget class="QLabel" name="label_3">
         <property name="geometry">
          <rect>
-          <x>540</x>
+          <x>330</x>
           <y>80</y>
           <width>118</width>
           <height>17</height>
