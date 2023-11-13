@@ -1,11 +1,11 @@
 import os
 import sys
-from PySide2 import QtCore
-from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
-from PySide2.QtGui import QFont, QPixmap, QIcon
+
+from PySide2.QtCore import QFile, QIODevice, Qt
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
-from db.queries import darAlta, actualizarDatosNiños, getById, actualizarPregunta, darAltaPregunta
+
+from db.queries import actualizarPregunta, darAltaPregunta
 
 
 class CrearEditarHistoriaPregunta(QWidget):
@@ -143,4 +143,3 @@ class CrearEditarHistoriaPregunta(QWidget):
 
         else:
             print("No datos")
-

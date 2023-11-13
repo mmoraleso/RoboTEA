@@ -529,11 +529,8 @@ class Client(Thread, metaclass=MetaClient):
                 frame.depth = img.shape[2]
                 frame.image = np.fromstring(img, np.uint8)
                 aprils = self.__apriltagProxy.processimage(frame)
-                # img[0:256, 0:256] = [255, 0, 0]
-                # print("NPArray " + str(img))
                 imgen = Img.fromarray(img, 'RGB')
                 imgen.save('my.png')
-                # print("IMAGE " + str(img))
                 self.__apriltag_current_exist = True
                 self.__listAprilIDs = [a.id for a in aprils]
                 self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}

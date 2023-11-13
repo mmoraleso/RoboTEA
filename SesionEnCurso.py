@@ -1,20 +1,19 @@
 from __future__ import print_function, absolute_import
 
+import os
 import sys
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
-from PySide2.QtGui import QFont, QPixmap, QIcon
+import traceback
+
+from PySide2 import QtWidgets
+from PySide2.QtCore import QFile, QIODevice, QSize, Qt
+from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
-from qtpy import QtGui
 
-from PantallaDeCarga import PantallaDeCarga
-from db.queries import darAlta, actualizarDatosNiños, getById, getAll, getPreguntaById
+from db.queries import getPreguntaById
 
-import sys, os, time, traceback
 sys.path.insert(0, os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
 from learnblock.Cozmo import Robot
-import signal
 import sys
 
 class SesionEnCurso(QWidget):
@@ -197,6 +196,7 @@ class SesionEnCurso(QWidget):
 
     def comprobarEmociones(self):
         print("Comprobar emociones")
+        self.lineasSinDecir = {}
         self.capturarApriltag()
         if self.pausado == False:
             self.estado = 1
@@ -206,6 +206,7 @@ class SesionEnCurso(QWidget):
     def cozmoPregunta(self):
         self.estado = 2
         print("Cozmo pregunta")
+        self.lineasSinDecir = {}
         # obtener cuerpo pregunta
         cuerpoPregunta = getPreguntaById(self.pregunta)[0]
         self.app.processEvents()
@@ -217,14 +218,16 @@ class SesionEnCurso(QWidget):
             self.cambiarEstado()
 
     def darRecompensa(self):
+        self.lineasSinDecir = {}
         print("Dando recompensa")
         if self.emocionCorrecta:
             print("EMocion correcta")
             print("baila:")
-            self.robot.dance()
+
+            self.robot.doWInDance()
         else:
             print("sadness:")
-            self.robot.idle()
+            self.robot.sendBehaviour("unhappy")
 
         if self.pausado == False:
             self.estado = 3
@@ -267,16 +270,9 @@ class SesionEnCurso(QWidget):
         self.pausado = True
 
     def capturarApriltag(self):
-        # apriltagImagen = self.robot.getAprilTagId()
-        # print("Que devuelve getAprilTagId: " + str(apriltagImagen))
         apriltagImagen = self.robot.getAprilTagId()
         print("Apriltag de la imagen: " + str(apriltagImagen))
         if apriltagImagen == self.idAprilTagEmocion:
             self.emocionCorrecta = True
         else:
             self.emocionCorrecta = False
-
-
-
-
-

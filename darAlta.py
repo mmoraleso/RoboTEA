@@ -1,10 +1,11 @@
 import sys
-from PySide2 import QtCore
-from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
-from PySide2.QtGui import QFont, QPixmap, QIcon
+
+from PySide2.QtCore import QFile, QIODevice, Qt
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
+
 from db.queries import darAlta
+
 
 class DarAltaClass(QWidget):
     def __init__(self, listado, parent=None):

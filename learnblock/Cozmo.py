@@ -7,6 +7,7 @@ import time
 
 from PySide2.QtCore import QThread
 from PySide2.QtWidgets import QApplication
+from tensorflow_estimator.python.estimator.estimator import maybe_overwrite_model_dir_and_session_config
 
 from PantallaDeCarga import PantallaDeCarga
 
@@ -35,11 +36,9 @@ def cozmo_program(_robot: cozmoR.robot.Robot):
         pass
 
 class Robot(Client):
-    print("Dentro de robot cozmo.py")
     devicesAvailables = ["base", "camera", "display", "jointmotor", "groundsensors", "acelerometer", "gyroscope", "speaker"]
 
     def __init__(self):
-        print("Dentro de init cozmo.py")
         global cozmo
         global stopThread
         stopThread = False
@@ -202,13 +201,25 @@ class Robot(Client):
         self.CozmoBehaviors["sleep"] = cozmoR.anim.Triggers.CodeLabSleep
         self.CozmoBehaviors["sneeze"] = cozmoR.anim.Triggers.CodeLabSneeze
         self.CozmoBehaviors["zombie"] = cozmoR.anim.Triggers.CodeLabZombie
+        self.CozmoBehaviors["dancing"] = cozmoR.anim.Triggers.CodeLabWin
+        self.CozmoBehaviors["dancingMambo"] = cozmoR.anim.Triggers.CodeLabDancingMambo
+        self.CozmoBehaviors["unhappy"] = cozmoR.anim.Triggers.CubePounceLoseSession
 
 
     def sendBehaviour(self, bhv):
         if bhv in self.CozmoBehaviors.keys():
             self.cozmo.wait_for_all_actions_completed()
-            self.cozmo.play_anim_trigger(self.CozmoBehaviors[bhv])
+            self.cozmo.play_anim_trigger(self.CozmoBehaviors[bhv]).wait_for_completed()
 #            self.cozmo.wait_for_all_actions_completed()
+
+    def doWInDance(self):
+        self.cozmo.wait_for_all_actions_completed()
+        self.cozmo.move_lift(5)
+        time.sleep(1)
+        self.cozmo.play_anim_trigger(cozmoR.anim.Triggers.CodeLabWin).wait_for_completed()
+        self.cozmo.turn_in_place(degrees(359)).wait_for_completed()
+        self.cozmo.move_lift(-5)
+
     def getPantallaCargaLoadingValue(self):
         return self.pantallaDeCarga.getLoadingBarValue()
 

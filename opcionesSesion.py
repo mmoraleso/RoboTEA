@@ -1,13 +1,12 @@
 import os
-import pathlib
 import sys
-from PySide2 import QtCore
-from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
-from PySide2.QtGui import QFont, QPixmap, QIcon
+
+from PySide2.QtCore import QFile, QIODevice, Qt
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
+
 from SesionEnCurso import SesionEnCurso
-from db.queries import darAlta, actualizarDatosNiños, getById, getAll, getAllEmociones, getAllPreguntas
+from db.queries import getAll, getAllEmociones, getAllPreguntas
 
 
 class OpcionesSesion(QWidget):
@@ -55,8 +54,8 @@ class OpcionesSesion(QWidget):
             sys.exit(-1)
 
         self.historiasCB = self.windowOpciones.findChild(QComboBox, 'actividad1_CB')
-        self.emocionesCB = self.windowOpciones.findChild(QComboBox, 'actividad2_CB')
-        self.preguntasCB = self.windowOpciones.findChild(QComboBox, 'actividad3_CB')
+        self.emocionesCB = self.windowOpciones.findChild(QComboBox, 'actividad3_CB')
+        self.preguntasCB = self.windowOpciones.findChild(QComboBox, 'actividad2_CB')
 
         self.botonAceptar = self.windowOpciones.findChild(QPushButton, 'aceptar_opciones_button')
         self.botonCancelar = self.windowOpciones.findChild(QPushButton, 'cancelar_opciones_button')

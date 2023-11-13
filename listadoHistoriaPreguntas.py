@@ -1,4 +1,5 @@
 import os
+import signal
 import sys
 from PySide2 import QtCore, QtWidgets
 from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt

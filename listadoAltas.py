@@ -1,7 +1,8 @@
 import sys
+
 from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
-from PySide2.QtGui import QFont, QPixmap, QIcon
+from PySide2.QtCore import QFile, QIODevice, Qt
+from PySide2.QtGui import QFont
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
@@ -106,5 +107,3 @@ class ListadoAltas(QWidget):
         self.tabla.verticalHeader().setVisible(False)
 
         self.actualizarDatosTabla()
-
-
