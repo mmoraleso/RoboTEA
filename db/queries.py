@@ -40,6 +40,21 @@ def getById(_id):
         if con:
             cursorObj.close()
             con.close()
+def getEmocionById(_id):
+    con = crearConexion()
+    query = f"""SELECT nombreEmocion, aprilTag FROM emociones WHERE id = {_id}"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query)
+        child = cursorObj.fetchone()
+        print("Se han obtenido la emocion con id: " + str(_id))
+        return child
+    except Error as error:
+        print("Error al obtener el emocion con id = :" + str(_id) +" Error: "+ str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
 
 def darAlta(data):
     print("Se va a realizar una alta")
@@ -95,7 +110,7 @@ def deleteById(_id):
 def darAltaEmociones(data):
     print("Se va a realizar una alta")
     con = crearConexion()
-    query = """INSERT INTO emociones (nombreEmocion) VALUES (?)"""
+    query = """INSERT INTO emociones (nombreEmocion, aprilTag) VALUES (?,?)"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query, data)
@@ -170,6 +185,24 @@ def getAllPreguntas():
         return children
     except Error as error:
         print("Error al obtener todo:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
+
+def actualizarEmocion(_id, data):
+    con = crearConexion()
+    print("ID que llega al actualizar: " + str(_id))
+    query = f"""UPDATE emociones SET nombreEmocion = ?, aprilTag = ? WHERE id = {_id}"""
+    try:
+        cursorObj = con.cursor()
+        datosquery = (data, _id)
+        cursorObj.execute(query, data)
+        con.commit()
+        print("Se ha dado actualizado la emocion con id = " + str(_id))
+        return True
+    except Error as error:
+        print("Error al actualizar:" + str(error))
     finally:
         if con:
             cursorObj.close()

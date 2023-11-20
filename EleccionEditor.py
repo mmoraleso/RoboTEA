@@ -5,6 +5,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
 from listadoAltas import ListadoAltas
+from listadoEmociones import ListadoEmociones
 from listadoHistoriaPreguntas import ListadoHistoriasPreguntas
 
 
@@ -17,6 +18,8 @@ class EleccionEditor(QWidget):
         self.botonHistorias.clicked.connect(self.mostrarConfiguracionH)
         self.botonPreguntas.clicked.connect(self.mostrarConfiguracionP)
         self.botonChildren.clicked.connect(self.mostrarConfiguracionChildren)
+        self.botonEmociones.clicked.connect(self.mostrarConfiguracionEmociones)
+
 
     # Creo que este metodo no sería necesario
     # def clickAceptar(self):
@@ -54,6 +57,7 @@ class EleccionEditor(QWidget):
         self.botonHistorias = self.windowEleccion.findChild(QPushButton, 'historias_button')
         self.botonPreguntas = self.windowEleccion.findChild(QPushButton, 'preguntas_button')
         self.botonChildren = self.windowEleccion.findChild(QPushButton, 'ninos_button')
+        self.botonEmociones = self.windowEleccion.findChild(QPushButton, 'emociones_button')
 
     def mostrarConfiguracionH(self):
         #Nos lleva a la siguiente pantalla, el listado de historias
@@ -67,6 +71,11 @@ class EleccionEditor(QWidget):
     def mostrarConfiguracionChildren(self):
         #Nos lleva a la siguiente pantalla, el listado de niños y niñas
         self.editorDeListado = ListadoAltas()
+        self.mostrarPantalla()
+
+    def mostrarConfiguracionEmociones(self):
+        # Nos lleva a la siguiente pantalla, el listado de niños y niñas
+        self.editorDeListado = ListadoEmociones()
         self.mostrarPantalla()
 
     def mostrarPantalla(self):
