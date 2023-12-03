@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="iconos">
+    <file>puntuaciones.png</file>
+    <file>fondo.png</file>
     <file>boton-agregar.png</file>
     <file>boton-detener.png</file>
     <file>IMG_0344.PNG</file>

@@ -8,7 +8,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
 from CrearEditarHistoriaPregunta import CrearEditarHistoriaPregunta
-from db.queries import getAll, deleteById, getAllPreguntas, deletePreguntasById
+from db.queries import getAll, deleteById, getAllPreguntas, deletePreguntasById, deleteHistoriaById, getAllHistorias
 from editarAlta import EditarAlta
 
 class ListadoHistoriasPreguntas(QWidget):
@@ -75,9 +75,10 @@ class ListadoHistoriasPreguntas(QWidget):
             contenido = self.tabla.item(filaPulsada, 2).text()
             self.editarDatosWindow = CrearEditarHistoriaPregunta('E', 'P',id, contenido, titulo, self)
         else:
-            titulo = self.tabla.item(filaPulsada, 0).text()
-            contenido = self.tabla.item(filaPulsada, 1).text()
-            self.editarDatosWindow = CrearEditarHistoriaPregunta('E', 'H', titulo, contenido, '', self)
+            id = self.tabla.item(filaPulsada, 0).text()
+            titulo = self.tabla.item(filaPulsada, 1).text()
+            contenido = self.tabla.item(filaPulsada, 2).text()
+            self.editarDatosWindow = CrearEditarHistoriaPregunta('E', 'H', id, contenido, titulo, self)
         if self.editarDatosWindow.isVisible():
             self.editarDatosWindow.hide()
         else:
@@ -94,8 +95,12 @@ class ListadoHistoriasPreguntas(QWidget):
             print("Id row pulsada " + str(id))
             deletePreguntasById(idNum)
         else:
-            nombre=self.tabla.item(filaPulsada, 0).text()+".txt"
-            os.remove("historias/" + nombre)
+            id = self.tabla.item(filaPulsada, 0).text()
+            idNum = int(id)
+            print("Id row pulsada " + str(id))
+            deleteHistoriaById(idNum)
+            # nombre=self.tabla.item(filaPulsada, 0).text()+".txt"
+            # os.remove("historias/" + nombre)
         self.actualizarDatosTabla()
 
     def actualizarDatosTabla(self):
@@ -104,11 +109,12 @@ class ListadoHistoriasPreguntas(QWidget):
             columnas = ["Id", "Título", "Pregunta", "Editar Pregunta", "Eliminar"]
             datos = getAllPreguntas()
         else:
-            columnas = ["Título", "Historia", "Editar Pregunta", "Eliminar"]
-            listadoActividades,textoActividades = self.cargarDatosHistorias()
-            for (i, fila) in enumerate(listadoActividades):
-                obj_aux = [listadoActividades[i],textoActividades[i]]
-                datos.append(obj_aux)
+            columnas = ["Id","Título", "Historia", "Editar Historia", "Eliminar"]
+            datos = getAllHistorias()
+            # listadoActividades,textoActividades = self.cargarDatosHistorias()
+            # for (i, fila) in enumerate(listadoActividades):
+            #     obj_aux = [listadoActividades[i],textoActividades[i]]
+            #     datos.append(obj_aux)
         self.tabla.setRowCount(len(datos))
         for (i, fila) in enumerate(datos):
             editButton = QPushButton("Editar", self)
@@ -129,7 +135,7 @@ class ListadoHistoriasPreguntas(QWidget):
         if self.accionSeleccionada == 'P':
             columnas = ["Id", "Título", "Pregunta", "Editar Pregunta", "Eliminar"]
         else:
-            columnas = ["Título", "Historia", "Editar Pregunta", "Eliminar"]
+            columnas = ["Id","Título", "Historia", "Editar Pregunta", "Eliminar"]
         self.tabla.setColumnCount(len(columnas))
         self.tabla.setHorizontalHeaderLabels(columnas)
         self.tabla.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)

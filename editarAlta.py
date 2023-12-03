@@ -49,7 +49,13 @@ class EditarAlta(QWidget):
             print(self.windowEditar.errorString())
             sys.exit(-1)
         genderComboBox = self.windowEditar.findChild(QComboBox, 'comboBox')
+        comunicacionOralComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_comoral')
+        teaComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_tea')
+        diComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_di')
         genderComboBox.addItems(['Niño', 'Niña', 'No definido'])
+        comunicacionOralComboBox.addItems(['Sí', 'No'])
+        teaComboBox.addItems(['Sí', 'No'])
+        diComboBox.addItems(['Sí', 'No'])
         self.botonAceptar = self.windowEditar.findChild(QPushButton, 'aceptar_alta_button')
         self.botonCancelar = self.windowEditar.findChild(QPushButton, 'cancelar_alta_button')
         print("Después del show")
@@ -58,20 +64,28 @@ class EditarAlta(QWidget):
         self.nameLine = self.windowEditar.findChild(QLineEdit, 'lineEdit')
         self.ageSpinBox = self.windowEditar.findChild(QSpinBox, 'spinBox')
         self.genderComboBox = self.windowEditar.findChild(QComboBox, 'comboBox')
-        name = self.nameLine.text()
-        age = self.ageSpinBox.value()
-        gender = self.genderComboBox.currentText()
+        self.comunicacionOralComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_comoral')
+        self.teaComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_tea')
+        self.diComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_di')
 
         datosActuales = getById(self.id)
         print("Datos actuales: " + str(datosActuales))
         self.nameLine.setText(datosActuales[1])
         self.ageSpinBox.setValue(datosActuales[2])
         self.genderComboBox.setCurrentText(datosActuales[3])
+        self.teaComboBox.setCurrentText('Sí' if datosActuales[4] == 0 else 'No')
+        self.diComboBox.setCurrentText('Sí' if datosActuales[5] == 0 else 'No')
+        self.comunicacionOralComboBox.setCurrentText('Sí' if datosActuales[6] == 0  else 'No')
+
 
     def comprobarDatos(self):
         name = self.nameLine.text()
         age = self.ageSpinBox.value()
         gender = self.genderComboBox.currentText()
+        comOral = self.comunicacionOralComboBox.currentIndex()
+        tea = self.teaComboBox.currentIndex()
+        di = self.diComboBox.currentIndex()
+
 
         contadorVacios = 0
 
@@ -80,6 +94,12 @@ class EditarAlta(QWidget):
         if age == 0:
             contadorVacios += 1
         if gender == "":
+            contadorVacios += 1
+        if tea < 0:
+            contadorVacios += 1
+        if comOral < 0:
+            contadorVacios += 1
+        if di < 0:
             contadorVacios += 1
 
         resultado = True
@@ -94,9 +114,12 @@ class EditarAlta(QWidget):
         name = self.nameLine.text()
         age = self.ageSpinBox.value()
         gender = self.genderComboBox.currentText()
+        comOral = self.comunicacionOralComboBox.currentIndex()
+        tea = self.teaComboBox.currentIndex()
+        di = self.diComboBox.currentIndex()
 
         if self.comprobarDatos():
-            child = (name, age, gender)
+            child = (name, age, gender, tea, di, comOral)
             print(child)
             actualizarDatosNiños(self.id, child)
 

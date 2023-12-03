@@ -5,7 +5,7 @@ from PySide2.QtCore import QFile, QIODevice, Qt
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
-from db.queries import actualizarPregunta, darAltaPregunta
+from db.queries import actualizarPregunta, darAltaPregunta, darAltaHistoria, actualizarHistoria
 
 
 class CrearEditarHistoriaPregunta(QWidget):
@@ -17,12 +17,12 @@ class CrearEditarHistoriaPregunta(QWidget):
         self.tituloPregunta = _tituloPregunta
         self.listadoHistoriasPreguntas = _listadoHistoriasPreguntasClass
         if self.accion == 'E':
-            if self.tipoDato == 'P':
-                print(str(self.accion) + " PRegunta")
-                self.id = int(_id)
-            else:
-                print(str(self.accion) + " Historia")
-                self.id = _id
+            # if self.tipoDato == 'P':
+            #     print(str(self.accion) + " PRegunta")
+            self.id = int(_id)
+            # else:
+            #     print(str(self.accion) + " Historia")
+            #     self.id = _id
 
         self.setupUi(self)
         self.mostrarDatosActuales()
@@ -80,7 +80,7 @@ class CrearEditarHistoriaPregunta(QWidget):
                 self.contenidoTE.setPlainText(self.contenido)
             else:
                 tituloWindow.setText("Editar historia")
-                self.tituloTE.setPlainText(self.id)
+                self.tituloTE.setPlainText(self.tituloPregunta)
                 self.contenidoTE.setPlainText(self.contenido)
 
         if (self.tipoDato == 'P'):
@@ -118,25 +118,27 @@ class CrearEditarHistoriaPregunta(QWidget):
 
         if self.comprobarDatos():
             if self.accion == 'C':
+                data = (titulo, contenido)
                 if (self.tipoDato == 'P'):
-                    data = (titulo, contenido)
                     darAltaPregunta(data)
                 else:
-                    print(str("historias/" + titulo))
-                    fichero = open("historias/" + str(titulo)+".txt", 'w')
-                    fichero.writelines(contenido)
-                    os.fsync(fichero.fileno())
-                    fichero.close()
+                    darAltaHistoria(data)
+            # print(str("historias/" + titulo))
+                    # fichero = open("historias/" + str(titulo)+".txt", 'w')
+                    # fichero.writelines(contenido)
+                    # os.fsync(fichero.fileno())
+                    # fichero.close()
             else:
+                data = (titulo, contenido)
                 if (self.tipoDato == 'P'):
-                    data = (titulo, contenido)
                     actualizarPregunta(self.id, data)
                 else:
-                    os.remove("historias/" + self.id+".txt")
-                    fichero = open("historias/"+str(titulo)+".txt", 'w')
-                    fichero.writelines(contenido)
-                    os.fsync(fichero.fileno())
-                    fichero.close()
+                    actualizarHistoria(self.id, data)
+                    # os.remove("historias/" + self.id+".txt")
+                    # fichero = open("historias/"+str(titulo)+".txt", 'w')
+                    # fichero.writelines(contenido)
+                    # os.fsync(fichero.fileno())
+                    # fichero.close()
             self.windowEditarHP.hide()
             self.windowEditarHP.close()
             self.listadoHistoriasPreguntas.actualizarDatosTabla()

@@ -276,3 +276,6 @@ class SesionEnCurso(QWidget):
             self.emocionCorrecta = True
         else:
             self.emocionCorrecta = False
+
+#TODO: Nuevo método de evaluación
+#TODO: Cambiar como habla Cozmo

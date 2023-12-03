@@ -79,7 +79,7 @@ class ListadoAltas(QWidget):
         self.actualizarDatosTabla()
 
     def actualizarDatosTabla(self):
-        columnas = ["Id", "Nombre", "Edad", "Genero", "Editar Datos", "Eliminar"]
+        columnas = ["Id", "Nombre", "Edad", "Genero", "Padece TEA", "Padece DI", "C. Oral", "Editar Datos", "Eliminar"]
         datos = getAll()
         self.tabla.setRowCount(len(datos))
         for (i, fila) in enumerate(datos):
@@ -92,12 +92,17 @@ class ListadoAltas(QWidget):
             deleteButton.clicked.connect(self.pulsarEliminar)
 
             for (j, columna) in enumerate(fila):
+                if j > 3 and columna == 0:
+                    columna = 'Sí'
+                elif j > 3 and columna == 1:
+                    columna = 'No'
+
                 self.tabla.setItem(i, j, QTableWidgetItem(str(columna)))
                 item = self.tabla.item(i, j)
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
 
     def cargarDatosTable(self):
-        columnas = ["Id", "Nombre", "Edad", "Genero", "Editar Datos", "Eliminar"]
+        columnas = ["Id", "Nombre", "Edad", "Genero", "Padece TEA", "Padece DI", "C. Oral", "Editar Datos", "Eliminar"]
         self.tabla.setColumnCount(len(columnas))
         self.tabla.setHorizontalHeaderLabels(columnas)
         self.tabla.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
