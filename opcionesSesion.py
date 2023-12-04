@@ -6,7 +6,7 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
 from SesionEnCurso import SesionEnCurso
-from db.queries import getAll, getAllEmociones, getAllPreguntas
+from db.queries import getAll, getAllEmociones, getAllPreguntas, getAllHistorias
 
 
 class OpcionesSesion(QWidget):
@@ -68,9 +68,9 @@ class OpcionesSesion(QWidget):
         self.cargarDatosPreguntasComboBox()
     def cargarDatosNiñosComboBox(self):
         self.childrenComboBox = self.windowOpciones.findChild(QComboBox, 'childSesion_CB')
-        datosNiños = getAll()
-        if(datosNiños):
-            for(i, fila) in enumerate(datosNiños):
+        self.datosNiños = getAll()
+        if(self.datosNiños):
+            for(i, fila) in enumerate(self.datosNiños):
                 self.childrenComboBox.addItem(fila[1])
 
     def cargarDatosEmocionesComboBox(self):
@@ -86,14 +86,18 @@ class OpcionesSesion(QWidget):
                 self.preguntasCB.addItem(fila[1])
 
     def cargarDatosHistorias(self):
-        historiasUrl = os.getcwd() + '/historias'
-        directorioHistorias = os.listdir(historiasUrl)
-        listadoActividades = []
-        for fichero in directorioHistorias:
-            if os.path.isfile(os.path.join(historiasUrl, fichero)) and fichero.endswith('.txt'):
-                listadoActividades.append(fichero[:-4])
-        if(listadoActividades):
-            self.historiasCB.addItems(listadoActividades)
+        self.historias = getAllHistorias()
+        if (self.historias):
+            for(i, fila) in enumerate(self.historias):
+                self.historiasCB.addItem(fila[1])
+        # historiasUrl = os.getcwd() + '/historias'
+        # directorioHistorias = os.listdir(historiasUrl)
+        # listadoActividades = []
+        # for fichero in directorioHistorias:
+        #     if os.path.isfile(os.path.join(historiasUrl, fichero)) and fichero.endswith('.txt'):
+        #         listadoActividades.append(fichero[:-4])
+        # if(listadoActividades):
+        #     self.historiasCB.addItems(listadoActividades)
 
     def guardarDatos(self):
 
@@ -101,12 +105,15 @@ class OpcionesSesion(QWidget):
         idAprilTagEmocion = self.emociones[indexEmociones][2]
         indexPreguntas = self.preguntasCB.currentIndex()
         idPregunta = self.preguntas[indexPreguntas][0]
-        historia = self.historiasCB.currentText()
-        emocion = self.emocionesCB.currentText()
+        indexHistoria = self.historiasCB.currentIndex()
+        historia = self.historias[indexHistoria][0]
+        emocion = self.emociones[indexEmociones][0]
         pregunta = self.preguntasCB.currentText()
         niñoSesion = self.childrenComboBox.currentText()
+        indexNiño = self.childrenComboBox.currentIndex()
+        idNiño=self.datosNiños[indexNiño][0]
 
-        self.datosSesion = [historia, idPregunta, emocion, niñoSesion, idAprilTagEmocion]
+        self.datosSesion = [historia, idPregunta, emocion, niñoSesion, idAprilTagEmocion,idNiño]
 
     def mostrarSesion(self):
         self.guardarDatos()

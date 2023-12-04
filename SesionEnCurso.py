@@ -3,6 +3,7 @@ from __future__ import print_function, absolute_import
 import os
 import sys
 import traceback
+from datetime import datetime
 
 from PySide2 import QtWidgets
 from PySide2.QtCore import QFile, QIODevice, QSize, Qt
@@ -10,7 +11,7 @@ from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
-from db.queries import getPreguntaById
+from db.queries import getPreguntaById, getHistoriasById, darAltaSesion
 
 sys.path.insert(0, os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
 from learnblock.Cozmo import Robot
@@ -38,6 +39,7 @@ class SesionEnCurso(QWidget):
         self.botonPregunta.clicked.connect(self.cozmoPregunta)
         self.botonPremio.clicked.connect(self.darRecompensa)
         self.botonDetener.clicked.connect(self.detener)
+        self.botonEvaluacion.clicked.connect(self.evaluarSesion)
         self.barraVolumen.valueChanged.connect(self.cambiarVolumen)
         self.lineasFichero = {}; #listado con las lineas del fichero de situación
         self.lineasSinDecir = {}; #listado de lineas que todavía no se han dicho
@@ -45,6 +47,7 @@ class SesionEnCurso(QWidget):
         self.historia = datosSesion[0]
         self.pregunta = datosSesion[1]
         self.emocion = datosSesion[2]
+        self.idNiño = datosSesion[5]
         self.idAprilTagEmocion = datosSesion[4]
         self.app = QtWidgets.QApplication.instance()
         self.robot = 0
@@ -98,6 +101,7 @@ class SesionEnCurso(QWidget):
         self.botonPregunta = self.windowSesion.findChild(QPushButton, 'botonPregunta')
         self.botonPremio = self.windowSesion.findChild(QPushButton, 'botonPremio')
         self.botonDetener = self.windowSesion.findChild(QPushButton, 'botonDetener')
+        self.botonEvaluacion = self.windowSesion.findChild(QPushButton, 'botonEvaluacion')
         self.barraVolumen = self.windowSesion.findChild(QSlider, 'barraVolumen')
 
     def definirIconoBotones(self):
@@ -136,6 +140,11 @@ class SesionEnCurso(QWidget):
         iconoDetener.addFile("./interfaz/iconos/boton-detener.png", QSize(), QIcon.Normal, QIcon.Off)
         self.botonDetener.setIcon(iconoDetener)
 
+        #imagen boton Detener
+        iconoEvaluacion = QIcon()
+        iconoEvaluacion.addFile("./interfaz/iconos/puntuaciones.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.botonEvaluacion.setIcon(iconoEvaluacion)
+
         #Valores barra volumen
         self.barraVolumen.setMinimum(0)
         self.barraVolumen.setMaximum(100)
@@ -153,6 +162,8 @@ class SesionEnCurso(QWidget):
                 self.cozmoPregunta()
             if self.estado == 3:
                 self.darRecompensa()
+            if self.estado == 4:
+                self.evaluarSesion()
 
     def detener(self):
         print("Deteniendo la sesión")
@@ -234,6 +245,28 @@ class SesionEnCurso(QWidget):
             self.estado += 1
             self.cambiarEstado()
 
+    def evaluarSesion(self):
+        print("Evaluando Sesion")
+        self.robot.say_Text("Para finalizar, es hora de evaluar la sesión")
+        self.robot.cozmo.wait_for_all_actions_completed()
+        self.robot.say_Text("{nombreNiño}, ¿te ha gustado la sesión? Muéstrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]))
+        self.robot.cozmo.wait_for_all_actions_completed()
+        self.evaluacionNiño = self.robot.getAprilTagId()
+        print("Apriltag de la evaluacion del niño: " + str(self.evaluacionNiño))
+        self.robot.say_Text("Ahora los mayores, ¿Crees que esta sesión a ayudado a {nombreNiño}? Muestrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]))
+        self.robot.cozmo.wait_for_all_actions_completed()
+        self.evaluacionTerapeuta = self.robot.getAprilTagId()
+        print("Apriltag de la evaluacion del terapeuta " + str(self.evaluacionTerapeuta))
+
+        print("Guardando Info sesion")
+        if self.evaluacionNiño != None and self.evaluacionTerapeuta != None:
+            datosSesionAGuardar = (self.historia, self.idNiño, self.pregunta, self.emocion, self.evaluacionNiño, self.evaluacionTerapeuta, self.emocionCorrecta, datetime.now())
+            darAltaSesion(datosSesionAGuardar)
+        if self.pausado == False:
+            self.estado = 4
+            self.estado += 0
+            self.cambiarEstado()
+
     def setVolumenInicial(self):
         self.robot.cozmo.set_robot_volume(0.75)
         self.barraVolumen.setValue(75)
@@ -243,12 +276,12 @@ class SesionEnCurso(QWidget):
         self.robot.cozmo.set_robot_volume(self.barraVolumen.value()/100)
         self.app.processEvents()
 
-    def leerSituacion(self, situacion):
-        print("Leyendo situacion: " + situacion)
-        fichero = open("historias/"+situacion+'.txt')
+    def leerSituacion(self, id):
+        print("Leyendo situacion: " + str(id))
+        fichero = getHistoriasById(id)
 
         if not self.lineasSinDecir:
-            self.lineasFichero = fichero.readlines()
+            self.lineasFichero = fichero[0].split("\n")
             self.lineasSinDecir = self.lineasFichero.copy()
         print("Empieza la situación")
         while not self.pausado and self.lineasSinDecir and not self.detenido:

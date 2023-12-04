@@ -278,7 +278,7 @@ def getAllHistorias():
 
 def getHistoriasById(_id):
     con = crearConexion()
-    query = f"""SELECT * FROM historias WHERE titulo = {_id}"""
+    query = f"""SELECT * FROM historias WHERE id = {_id}"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query)
@@ -336,6 +336,25 @@ def deleteHistoriaById(_id):
         return True
     except Error as error:
         print("Error al borrar:" + str(error))
+    finally:
+        if con:
+            cursorObj.close()
+            con.close()
+
+#SESIONES
+
+def darAltaSesion(data):
+    print("Se va a realizar el alta de una sesion")
+    con = crearConexion()
+    query = """INSERT INTO sesiones (id_historia, id_niño, id_pregunta, id_emocion, puntuacion_niño, puntuacion_tutor, respuesta_correcta, timestamp) VALUES (%s,%s,%s,%s,%s,%s,%s, %s)"""
+    try:
+        cursorObj = con.cursor()
+        cursorObj.execute(query, data)
+        con.commit()
+        print("Se ha dado de alta una sesion")
+        return True
+    except Error as error:
+        print("Error al dar de alta :" + str(error))
     finally:
         if con:
             cursorObj.close()
