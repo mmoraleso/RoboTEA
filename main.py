@@ -59,9 +59,7 @@ class MainClass(QtWidgets.QMainWindow):
 
         self.mainWindow.show()
 
-        self.eleccionEditorWindow = EleccionEditor()
         editarOrdenesCozmoButton.clicked.connect(self.eleccionEditor)
-
 
         #imagen boton ayuda
         helpButton = self.mainWindow.findChild(QPushButton, 'help')
@@ -69,17 +67,18 @@ class MainClass(QtWidgets.QMainWindow):
         iconoHelp.addFile(absolute_path+"./interfaz/iconos/icons8-ayuda-64.png", QSize(), QIcon.Normal, QIcon.Off)
         helpButton.setIcon(iconoHelp)
 
-        self.opcionesSesionWindow = OpcionesSesion()
         nuevaSesionButton.clicked.connect(self.mostrarOpcionesSesion)
         sys.exit(self.app.exec_())
 
     def eleccionEditor(self):
+        self.eleccionEditorWindow = EleccionEditor()
         if self.eleccionEditorWindow.isVisible():
             self.eleccionEditorWindow.hide()
         else:
             self.eleccionEditorWindow.show()
 
     def mostrarOpcionesSesion(self):
+        self.opcionesSesionWindow = OpcionesSesion()
         if self.opcionesSesionWindow.isVisible():
             self.opcionesSesionWindow.hide()
         else:

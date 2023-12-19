@@ -10,6 +10,7 @@ from PySide2.QtCore import QFile, QIODevice, QSize, Qt
 from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
+from cozmo.util import degrees
 
 from db.queries import getPreguntaById, getHistoriasById, darAltaSesion
 
@@ -57,6 +58,9 @@ class SesionEnCurso(QWidget):
         self.setVolumenInicial()
         self.mostrarPantallas()
         self.emocionCorrecta = False
+        # self.audioSpeaker = pyttsx3.init()
+        # self.audioSpeaker.setProperty('rate', 150)
+
 
 
     def mostrarPantallas(self):
@@ -157,9 +161,9 @@ class SesionEnCurso(QWidget):
             if self.estado == 0:
                 self.contarSituacion()
             if self.estado == 1:
-                self.comprobarEmociones()
-            if self.estado == 2:
                 self.cozmoPregunta()
+            if self.estado == 2:
+                self.comprobarEmociones()
             if self.estado == 3:
                 self.darRecompensa()
             if self.estado == 4:
@@ -200,22 +204,22 @@ class SesionEnCurso(QWidget):
         print("Contado situación")
         self.leerSituacion(self.historia)
 
+        self.estado = 0
+        self.estado += 1
         if self.pausado == False:
-            self.estado = 0
-            self.estado += 1
             self.cambiarEstado()
 
     def comprobarEmociones(self):
         print("Comprobar emociones")
         self.lineasSinDecir = {}
         self.capturarApriltag()
+        # self.estado = 1
+        self.estado += 1
         if self.pausado == False:
-            self.estado = 1
-            self.estado += 1
             self.cambiarEstado()
 
     def cozmoPregunta(self):
-        self.estado = 2
+        # self.estado = 2
         print("Cozmo pregunta")
         self.lineasSinDecir = {}
         # obtener cuerpo pregunta
@@ -224,29 +228,32 @@ class SesionEnCurso(QWidget):
         self.robot.say_Text(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]))
         self.robot.cozmo.wait_for_all_actions_completed()
         print(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]))
+        self.estado += 1
         if self.pausado == False:
-            self.estado += 1
             self.cambiarEstado()
 
     def darRecompensa(self):
         self.lineasSinDecir = {}
         print("Dando recompensa")
-        if self.emocionCorrecta:
-            print("EMocion correcta")
-            print("baila:")
+        if self.imagenApril != None:
+            if self.emocionCorrecta:
+                print("EMocion correcta")
+                print("baila:")
 
-            self.robot.doWInDance()
-        else:
-            print("sadness:")
-            self.robot.sendBehaviour("unhappy")
+                self.robot.doWInDance()
+            else:
+                print("sadness:")
+                self.robot.sendBehaviour("unhappy")
 
-        if self.pausado == False:
             self.estado = 3
             self.estado += 1
-            self.cambiarEstado()
+            if self.pausado == False:
+                self.cambiarEstado()
 
     def evaluarSesion(self):
         print("Evaluando Sesion")
+        self.robot.cozmo.set_head_angle(degrees(10))
+        self.robot.cozmo.wait_for_all_actions_completed()
         self.robot.say_Text("Para finalizar, es hora de evaluar la sesión")
         self.robot.cozmo.wait_for_all_actions_completed()
         self.robot.say_Text("{nombreNiño}, ¿te ha gustado la sesión? Muéstrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]))
@@ -262,9 +269,10 @@ class SesionEnCurso(QWidget):
         if self.evaluacionNiño != None and self.evaluacionTerapeuta != None:
             datosSesionAGuardar = (self.historia, self.idNiño, self.pregunta, self.emocion, self.evaluacionNiño, self.evaluacionTerapeuta, self.emocionCorrecta, datetime.now())
             darAltaSesion(datosSesionAGuardar)
+        self.estado = 0
+        self.detenido = 1
+        self.pausado = 1
         if self.pausado == False:
-            self.estado = 4
-            self.estado += 0
             self.cambiarEstado()
 
     def setVolumenInicial(self):
@@ -289,7 +297,11 @@ class SesionEnCurso(QWidget):
 
             try:
                 self.app.processEvents()
-                self.robot.say_Text(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+                #self.audioSpeaker.save_to_file(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]), 'fraseHistoria.wav')
+                #self.audioSpeaker.runAndWait()
+                #self.robot.cozmo.set_robot_volume(0.8)
+                #self.play_audio('fraseHistoria.wav')
+                self.robot.deviceSendTextHuman(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
                 self.robot.cozmo.wait_for_all_actions_completed()
                 print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
 
@@ -300,15 +312,31 @@ class SesionEnCurso(QWidget):
                 print("Hay un error contando la situación")
 
         print("Cozmo ha terminado de contar la situación.")
-        self.pausado = True
+        # self.pausado = True
 
     def capturarApriltag(self):
+        self.robot.cozmo.set_head_angle(degrees(10))
+        self.robot.cozmo.wait_for_all_actions_completed()
         apriltagImagen = self.robot.getAprilTagId()
         print("Apriltag de la imagen: " + str(apriltagImagen))
-        if apriltagImagen == self.idAprilTagEmocion:
+        self.imagenApril = apriltagImagen
+        if apriltagImagen != None and apriltagImagen == self.idAprilTagEmocion:
             self.emocionCorrecta = True
         else:
             self.emocionCorrecta = False
 
 #TODO: Nuevo método de evaluación
 #TODO: Cambiar como habla Cozmo
+
+    # def crearFrasesDefault(self):
+    #     print("Creando frases default.")
+    #     self.audioSpeaker.save_to_file("Para finalizar, es hora de evaluar la sesión", 'EvaluarSesionIntro.wav')
+    #     self.audioSpeaker.runAndWait()
+    #     self.audioSpeaker.save_to_file("{nombreNiño}, ¿te ha gustado la sesión? Muéstrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]), 'EvaluarSesionChild.wav')
+    #     self.audioSpeaker.runAndWait()
+    #     self.audioSpeaker.save_to_file("Ahora los mayores, ¿Crees que esta sesión a ayudado a {nombreNiño}? Muestrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]), 'EvaluarSesionTerapeuta.wav')
+    #     self.audioSpeaker.runAndWait()
+    #
+    # def play_audio(self, nameFile):
+    #     pkts = audio_lib.load_wav(nameFile)
+    #     self.robot.cozmo.conn.send_msg(pkts)

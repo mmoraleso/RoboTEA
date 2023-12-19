@@ -346,7 +346,7 @@ def deleteHistoriaById(_id):
 def darAltaSesion(data):
     print("Se va a realizar el alta de una sesion")
     con = crearConexion()
-    query = """INSERT INTO sesiones (id_historia, id_niño, id_pregunta, id_emocion, puntuacion_niño, puntuacion_tutor, respuesta_correcta, timestamp) VALUES (%s,%s,%s,%s,%s,%s,%s, %s)"""
+    query = """INSERT INTO sesiones (id_historia, id_usuario, id_pregunta, id_emocion, puntuacion_usuario, puntuacion_tutor, respuesta_correcta, fecha) VALUES (%s,%s,%s,%s,%s,%s,%s, %s)"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query, data)

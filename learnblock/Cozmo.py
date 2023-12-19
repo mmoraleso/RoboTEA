@@ -97,6 +97,8 @@ class Robot(Client):
 
     def deviceSendText(self, text):
         self.cozmo.say_text(text=text, in_parallel=True)
+    def deviceSendTextHuman(self, text):
+        self.cozmo.say_text(text=text, in_parallel=True,use_cozmo_voice=True,voice_pitch=-1.0)
 
     def deviceSendAngleArm(self, _angle):
         angle_rad = math.radians(_angle)
