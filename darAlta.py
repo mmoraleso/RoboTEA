@@ -108,9 +108,9 @@ class DarAltaClass(QWidget):
         name = nameLine.text()
         age = ageSpinBox.value()
         gender = genderComboBox.currentText()
-        comOral = comunicacionOralComboBox.currentIndex()
-        tea = teaComboBox.currentIndex()
-        di = diComboBox.currentIndex()
+        comOral = 1 if comunicacionOralComboBox.currentIndex() == 0 else 0
+        tea = 1 if teaComboBox.currentIndex() == 0 else 0
+        di = 1 if diComboBox.currentIndex() == 0 else 0
 
         if self.comprobarDatos():
             child = (name, age, gender, tea, di, comOral)

@@ -100,6 +100,10 @@ class ListadoEmociones(QWidget):
     def cargarDatosTable(self):
         columnas = ["Id", "Emoción", "AprilTag Asignado", "Editar Datos", "Eliminar"]
         self.tabla.setColumnCount(len(columnas))
+        # self.tabla.horizontalHeaders().setSectionResizeMode(
+        #     2, QtWidgets.QHeaderView.Stretch)
+        # self.tabla.setColumnWidth(4, 10)
+        # self.tabla.setColumnWidth(3, 10)
         self.tabla.setHorizontalHeaderLabels(columnas)
         self.tabla.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.tabla.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignCenter)

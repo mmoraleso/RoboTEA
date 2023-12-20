@@ -73,9 +73,9 @@ class EditarAlta(QWidget):
         self.nameLine.setText(datosActuales[1])
         self.ageSpinBox.setValue(datosActuales[2])
         self.genderComboBox.setCurrentText(datosActuales[3])
-        self.teaComboBox.setCurrentText('Sí' if datosActuales[4] == 0 else 'No')
-        self.diComboBox.setCurrentText('Sí' if datosActuales[5] == 0 else 'No')
-        self.comunicacionOralComboBox.setCurrentText('Sí' if datosActuales[6] == 0  else 'No')
+        self.teaComboBox.setCurrentText('Sí' if datosActuales[4] == 1 else 'No')
+        self.diComboBox.setCurrentText('Sí' if datosActuales[5] == 1 else 'No')
+        self.comunicacionOralComboBox.setCurrentText('Sí' if datosActuales[6] == 1  else 'No')
 
 
     def comprobarDatos(self):
@@ -114,9 +114,9 @@ class EditarAlta(QWidget):
         name = self.nameLine.text()
         age = self.ageSpinBox.value()
         gender = self.genderComboBox.currentText()
-        comOral = self.comunicacionOralComboBox.currentIndex()
-        tea = self.teaComboBox.currentIndex()
-        di = self.diComboBox.currentIndex()
+        comOral = 1 if self.comunicacionOralComboBox.currentIndex() == 0 else 0
+        tea = 1 if self.teaComboBox.currentIndex() == 0 else 0
+        di = 1 if self.diComboBox.currentIndex() == 0 else 0
 
         if self.comprobarDatos():
             child = (name, age, gender, tea, di, comOral)

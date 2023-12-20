@@ -92,9 +92,9 @@ class ListadoAltas(QWidget):
             deleteButton.clicked.connect(self.pulsarEliminar)
 
             for (j, columna) in enumerate(fila):
-                if j > 3 and columna == 0:
+                if j > 3 and columna == 1:
                     columna = 'Sí'
-                elif j > 3 and columna == 1:
+                elif j > 3 and columna == 0:
                     columna = 'No'
 
                 self.tabla.setItem(i, j, QTableWidgetItem(str(columna)))
