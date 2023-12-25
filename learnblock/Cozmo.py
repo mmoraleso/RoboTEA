@@ -5,6 +5,7 @@ import queue
 import sys, os, numpy as np, PIL.Image as Image, PIL.ImageFilter as ImageFilter, io, cv2, paho.mqtt.client, threading, math
 import time
 
+import pycozmo
 from PySide2.QtCore import QThread
 from PySide2.QtWidgets import QApplication
 from tensorflow_estimator.python.estimator.estimator import maybe_overwrite_model_dir_and_session_config
@@ -51,52 +52,66 @@ class Robot(Client):
         self.pantallaDeCarga.receiveLoadingPageInfo(25)
         print("publishin... " + str(25))
         self.app.processEvents()
-        self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
-        self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
-        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.deviceResetGyroscope), "Z_AXIS")
+        # self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
+        # self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
+        # self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.deviceResetGyroscope), "Z_AXIS")
         self.addCamera(Camera(_readFunction=self.deviceReadCamera))
-        self.addBase(Base(_callFunction=self.deviceMove))
-        self.addDisplay(Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
-        self.addJointMotor(JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None), "CAMERA")
-        self.addJointMotor(JointMotor(_callDevice=self.deviceSendAngleArm, _readDevice=None), "ARM")
+        # self.addBase(Base(_callFunction=self.deviceMove))
+        # self.addDisplay(Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
+        # self.addJointMotor(JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None), "CAMERA")
+        # self.addJointMotor(JointMotor(_callDevice=self.deviceSendAngleArm, _readDevice=None), "ARM")
         self.addSpeaker(Speaker(_sendText=self.deviceSendText))
         self.connectToRobot()
-        self.cozmo = cozmo
-        self.cozmo.camera.image_stream_enabled = True
-        self.cozmo.camera.color_image_enabled = True
-        self.cozmo.enable_device_imu(enable_raw=True, enable_gyro = True)
-        self.current_pose_angle = 0
-        self.vueltas = 0
-        self.last_pose_read = 0
-        self.CozmoBehaviors = {}
-        self.setBehaviors()
+        # self.cozmo = cozmo
+        # self.cozmo.camera.image_stream_enabled = True
+        # self.cozmo.camera.color_image_enabled = True
+        # self.cozmo.enable_device_imu(enable_raw=True, enable_gyro = True)
+        # self.current_pose_angle = 0
+        # self.vueltas = 0
+        # self.last_pose_read = 0
+        # self.CozmoBehaviors = {}
+        # self.setBehaviors()
         self.app.processEvents()
         self.pantallaDeCarga.receiveLoadingPageInfo(75)
         self.app.processEvents()
         print("publishin... " + str(75))
-        self.start()
+        # self.start()
         self.app.processEvents()
         self.pantallaDeCarga.receiveLoadingPageInfo(100)
         self.app.processEvents()
         print("publishin... " + str(100))
         self.pantallaDeCarga.closePantallaCarga()
+        self.isSaved = False
+        cozmo = self.cozmo
 
     def connectToRobot(self):
-        self.pantallaDeCarga.receiveLoadingPageInfo(50)
-        cozmoR.robot.Robot.drive_off_charger_on_connect = False
-        self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program))
-        self.t.start()
-        time.sleep(2)
+        # self.pantallaDeCarga.receiveLoadingPageInfo(50)
+        # cozmoR.robot.Robot.drive_off_charger_on_connect = False
+        # self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program))
+        # self.t.start()
+        # time.sleep(2)
+        global stopThread
+        stopThread = True
+        print("Conectando cozmo con pycozmo")
+        self.cozmo = pycozmo.Client()
+        self.cozmo.start()
+        self.cozmo.connect()
+        self.cozmo.wait_for_robot()
+        print("Se ha conectado cozmo con pycozmo")
+
 
     def disconnect(self):
         print("disconnecting")
-        self.deviceMove(0,0)
-        self.cozmo.wait_for_all_actions_completed()
+        self.cozmo.disconnect()
+        self.cozmo.stop()
+        # self.deviceMove(0,0)
+        # self.cozmo.wait_for_all_actions_completed()
         global stopThread
         stopThread = True
 
     def deviceSendText(self, text):
-        self.cozmo.say_text(text=text, in_parallel=True)
+        self.cozmo.play_audio(text)
+        self.cozmo.wait_for(pycozmo.event.EvtAudioCompleted)
     def deviceSendTextHuman(self, text):
         self.cozmo.say_text(text=text, in_parallel=True,use_cozmo_voice=True,voice_pitch=-1.0)
 
@@ -165,15 +180,30 @@ class Robot(Client):
         return {"central": ground}
 
     def deviceReadCamera(self):
-        lastimg = self.cozmo.world.latest_image
-        if lastimg is not None:
-            img = lastimg.annotate_image()
-            open_cv_image = np.array(img.convert('RGB'))
-            cv_image = open_cv_image[:, :, ::-1].copy()
-            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
+        # lastimg = self.cozmo.world.latest_image
+        # if lastimg is not None:
+        print("deviceReadCamera cozmo")
+        self.cozmo.enable_camera(enable=True, color=True)
+            # Wait for image to stabilize.
+        time.sleep(2.0)
+
+        self.cozmo.add_handler(pycozmo.event.EvtNewRawCameraImage, self.on_camera_image, one_shot=True)
+        time.sleep(1)
+            # img = lastimg.annotate_image()
+            # open_cv_image = np.array(img.convert('RGB'))
+            # cv_image = open_cv_image[:, :, ::-1].copy()
+            # cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
+        while not self.isSaved:
+            print("Image still not saved")
+            time.sleep(0.5)
+        cv_image = cv2.imread(os.path.dirname(__file__) + '/../camera/camera.png', cv2.COLOR_RGB2GRAY)
+        if cv_image is not None:
+            print("Retorna imagen")
+            self.isSaved = False
             return cv_image, True
         else:
             print("error leyendo camara")
+            self.isSaved = False
             return None, False
 
     def deviceMove(self, SAdv, SRot):
@@ -233,6 +263,14 @@ class Robot(Client):
             else:
                 print("Opening pantalla de carga")
                 self.pantallaDeCarga.showCarga()
+    # def getCozmo(self):
+    #     return self.cozmo
+
+    def on_camera_image(self, cli, image):
+        print("saving image: ")
+        image.save(os.path.dirname(__file__) + '/../camera/camera.png', "PNG")
+        self.isSaved = True
+        print("Image already saved")
 
 if __name__ == '__main__':
     robot = Robot()

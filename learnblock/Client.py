@@ -95,6 +95,7 @@ class Client(Thread, metaclass=MetaClient):
     def __init__(self,_miliseconds=100):
         print("__init__")
         Thread.__init__(self)
+        self.stop2()
         self.__stop_event = Event() 
         self.__devices=getattr(self,'__devices')
         # self.pantallaCargaClient =getattr(self, '__pantallaCarga')
@@ -347,6 +348,10 @@ class Client(Thread, metaclass=MetaClient):
         subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
         subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
 
+    def stop2(self):
+        subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+        subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
+
     def stopped(self):
         return self.__stop_event.is_set()
 
@@ -498,7 +503,9 @@ class Client(Thread, metaclass=MetaClient):
             self.__Gyroscopes[_keyGyro].reset()
 
     def speakText(self,_text, _keySpeaker = "ROBOT"):
+        print("Entra en speakText")
         if _keySpeaker in self.__Speakers:
+            print("SpeakText dentro del if")
             time.sleep(0)
             self.__Speakers[_keySpeaker].sendText(_text)
 
@@ -521,17 +528,20 @@ class Client(Thread, metaclass=MetaClient):
 
     def __detectAprilTags(self, _keyCam = "ROBOT"):
         if _keyCam in self.__Cameras:
+            # print("Entra en el 1 if")
             if self.__apriltagRunning and not self.__apriltag_current_exist:
+                # print("Entra en el 2 if")
                 img = self.__Cameras[_keyCam].getImage()
+                # print("get image " + str(img))
                 frame = RoboCompApriltag.TImage()
                 frame.width = img.shape[0]
                 frame.height = img.shape[1]
-                frame.depth = img.shape[2]
+                frame.depth = img.shape[2] if len(img.shape) > 3 else 3
                 frame.image = np.fromstring(img, np.uint8)
                 aprils = self.__apriltagProxy.processimage(frame)
                 imgen = Img.fromarray(img, 'RGB')
                 imgen.save('my.png')
-                self.__apriltag_current_exist = True
+                # self.__apriltag_current_exist = True
                 self.__listAprilIDs = [a.id for a in aprils]
                 self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
 

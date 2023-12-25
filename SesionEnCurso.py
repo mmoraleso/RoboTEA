@@ -2,9 +2,12 @@ from __future__ import print_function, absolute_import
 
 import os
 import sys
+import time
 import traceback
 from datetime import datetime
 
+import pycozmo
+import pyttsx3
 from PySide2 import QtWidgets
 from PySide2.QtCore import QFile, QIODevice, QSize, Qt
 from PySide2.QtGui import QIcon
@@ -58,10 +61,7 @@ class SesionEnCurso(QWidget):
         self.setVolumenInicial()
         self.mostrarPantallas()
         self.emocionCorrecta = False
-        # self.audioSpeaker = pyttsx3.init()
-        # self.audioSpeaker.setProperty('rate', 150)
-
-
+        self.audioSpeaker = None
 
     def mostrarPantallas(self):
         if self.isVisibleSesion():
@@ -225,8 +225,12 @@ class SesionEnCurso(QWidget):
         # obtener cuerpo pregunta
         cuerpoPregunta = getPreguntaById(self.pregunta)[0]
         self.app.processEvents()
-        self.robot.say_Text(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]))
-        self.robot.cozmo.wait_for_all_actions_completed()
+        self.instanciarAudio()
+        self.audioSpeaker.save_to_file(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]),
+                                       'pregunta.wav')
+        self.audioSpeaker.runAndWait()
+        time.sleep(1)
+        self.robot.cozmo.play_audio('pregunta.wav')
         print(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]))
         self.estado += 1
         if self.pausado == False:
@@ -252,18 +256,40 @@ class SesionEnCurso(QWidget):
 
     def evaluarSesion(self):
         print("Evaluando Sesion")
-        self.robot.cozmo.set_head_angle(degrees(10))
-        self.robot.cozmo.wait_for_all_actions_completed()
-        self.robot.say_Text("Para finalizar, es hora de evaluar la sesión")
-        self.robot.cozmo.wait_for_all_actions_completed()
-        self.robot.say_Text("{nombreNiño}, ¿te ha gustado la sesión? Muéstrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]))
-        self.robot.cozmo.wait_for_all_actions_completed()
+        angle = (pycozmo.robot.MAX_HEAD_ANGLE.radians - pycozmo.robot.MIN_HEAD_ANGLE.radians) / 2.0
+        self.robot.cozmo.set_head_angle(angle)
+        time.sleep(1)
+
+        # Comienzo evaluacion
+        self.instanciarAudio()
+        self.audioSpeaker.save_to_file("Para finalizar, es hora de evaluar la sesión",
+                                       'inicioEvaluacion.wav')
+        self.audioSpeaker.runAndWait()
+        time.sleep(1)
+        self.robot.speakText('inicioEvaluacion.wav')
+        os.remove('inicioEvaluacion.wav')
+
+        # Evaluación niño
+        self.instanciarAudio()
+        self.audioSpeaker.save_to_file("{nombreNiño}, ¿te ha gustado la sesión? Muéstrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]),
+                                       'evaluacionUsuario.wav')
+        self.audioSpeaker.runAndWait()
+        time.sleep(1)
+        self.robot.speakText('evaluacionUsuario.wav')
         self.evaluacionNiño = self.robot.getAprilTagId()
         print("Apriltag de la evaluacion del niño: " + str(self.evaluacionNiño))
-        self.robot.say_Text("Ahora los mayores, ¿Crees que esta sesión a ayudado a {nombreNiño}? Muestrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]))
-        self.robot.cozmo.wait_for_all_actions_completed()
+        os.remove('evaluacionUsuario.wav')
+
+        # Evaluación terapeuta
+        self.instanciarAudio()
+        self.audioSpeaker.save_to_file("Ahora los mayores, ¿Crees que esta sesión a ayudado a {nombreNiño}? Muestrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]),
+                                       'evaluacionTerapeuta.wav')
+        self.audioSpeaker.runAndWait()
+        time.sleep(1)
+        self.robot.speakText('evaluacionTerapeuta.wav')
         self.evaluacionTerapeuta = self.robot.getAprilTagId()
         print("Apriltag de la evaluacion del terapeuta " + str(self.evaluacionTerapeuta))
+        os.remove('evaluacionTerapeuta.wav')
 
         print("Guardando Info sesion")
         if self.evaluacionNiño != None and self.evaluacionTerapeuta != None:
@@ -276,12 +302,17 @@ class SesionEnCurso(QWidget):
             self.cambiarEstado()
 
     def setVolumenInicial(self):
-        self.robot.cozmo.set_robot_volume(0.75)
+        self.robot.cozmo.set_volume(50000)
+
+        # self.robot.cozmo.set_robot_volume(0.75)
         self.barraVolumen.setValue(75)
 
     def cambiarVolumen(self):
+
         print("Cambiando volumen cozmo: " + str(self.barraVolumen.value()))
-        self.robot.cozmo.set_robot_volume(self.barraVolumen.value()/100)
+        maxVolum = 65535
+        self.robot.cozmo.set_volume((self.barraVolumen.value()*maxVolum) / 100)
+        # self.robot.cozmo.set_robot_volume(self.barraVolumen.value()/100)
         self.app.processEvents()
 
     def leerSituacion(self, id):
@@ -292,22 +323,28 @@ class SesionEnCurso(QWidget):
             self.lineasFichero = fichero[0].split("\n")
             self.lineasSinDecir = self.lineasFichero.copy()
         print("Empieza la situación")
+
         while not self.pausado and self.lineasSinDecir and not self.detenido:
             print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
 
             try:
+                print("Diciendo la linea: "+ self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
                 self.app.processEvents()
-                #self.audioSpeaker.save_to_file(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]), 'fraseHistoria.wav')
-                #self.audioSpeaker.runAndWait()
-                #self.robot.cozmo.set_robot_volume(0.8)
-                #self.play_audio('fraseHistoria.wav')
-                self.robot.deviceSendTextHuman(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
-                self.robot.cozmo.wait_for_all_actions_completed()
-                print(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+                self.instanciarAudio()
+                self.audioSpeaker.save_to_file(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]), 'fraseHistoria.wav')
+                self.audioSpeaker.runAndWait()
+                print("despues del run y antes del speak text")
+                time.sleep(1)
+                self.robot.speakText('fraseHistoria.wav')
+                # self.robot.cozmo.wait_for(pycozmo.event.EvtAudioCompleted)
+                # self.robot.deviceSendTextHuman(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
+                # self.robot.cozmo.wait_for_all_actions_completed()
+                print("Se terminó la frase")
 
                 # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
                 self.app.processEvents()
                 self.lineasSinDecir.pop(0)
+                os.remove('fraseHistoria.wav')
             except KeyError:
                 print("Hay un error contando la situación")
 
@@ -315,8 +352,9 @@ class SesionEnCurso(QWidget):
         # self.pausado = True
 
     def capturarApriltag(self):
-        self.robot.cozmo.set_head_angle(degrees(10))
-        self.robot.cozmo.wait_for_all_actions_completed()
+        angle = (pycozmo.robot.MAX_HEAD_ANGLE.radians - pycozmo.robot.MIN_HEAD_ANGLE.radians) / 2.0
+        self.robot.cozmo.set_head_angle(angle)
+        # self.robot.cozmo.wait_for_all_actions_completed()
         apriltagImagen = self.robot.getAprilTagId()
         print("Apriltag de la imagen: " + str(apriltagImagen))
         self.imagenApril = apriltagImagen
@@ -339,4 +377,17 @@ class SesionEnCurso(QWidget):
     #
     # def play_audio(self, nameFile):
     #     pkts = audio_lib.load_wav(nameFile)
-    #     self.robot.cozmo.conn.send_msg(pkts)
+    #     self.robot.set_volume(65535)
+    #     cli.play_audio("audio.wav")
+    #     cli.wait_for(pycozmo.event.EvtAudioCompleted)
+
+    def closeEvent(self, event):
+        self.cozmo.robot.disconnect()
+        event.accept()  # let the window close
+
+    def instanciarAudio(self):
+        if self.audioSpeaker:
+            del(self.audioSpeaker)
+        self.audioSpeaker = pyttsx3.init()
+        self.audioSpeaker.setProperty('rate', 200)
+        self.audioSpeaker.setProperty('voice', 'spanish+f1')  # voz lo más femenina posible

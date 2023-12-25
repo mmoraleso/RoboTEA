@@ -13,6 +13,7 @@ class Camera():
 
     def read(self):
         self.__mutexRead.acquire()
+        print("Camera read")
         img, new = self._readDevice()
         if new is True:
             self.__image = img
@@ -20,6 +21,11 @@ class Camera():
         self.__mutexRead.release()
 
     def getImage(self):
+        print("Get image camera")
+        img, new = self._readDevice()
+        if new is True:
+            self.__image = img
+            self.__newImageAvailable = True
         self.__mutexRead.acquire()
         simage = copy.copy(self.__image)
         self.__mutexRead.release()
