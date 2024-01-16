@@ -182,7 +182,7 @@ class Robot(Client):
     def deviceReadCamera(self):
         # lastimg = self.cozmo.world.latest_image
         # if lastimg is not None:
-        print("deviceReadCamera cozmo")
+        print("Realizando foto")
         self.cozmo.enable_camera(enable=True, color=True)
             # Wait for image to stabilize.
         time.sleep(2.0)
@@ -194,15 +194,12 @@ class Robot(Client):
             # cv_image = open_cv_image[:, :, ::-1].copy()
             # cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
         while not self.isSaved:
-            print("Image still not saved")
             time.sleep(0.5)
         cv_image = cv2.imread(os.path.dirname(__file__) + '/../camera/camera.png', cv2.COLOR_RGB2GRAY)
         if cv_image is not None:
-            print("Retorna imagen")
             self.isSaved = False
             return cv_image, True
         else:
-            print("error leyendo camara")
             self.isSaved = False
             return None, False
 
@@ -244,13 +241,14 @@ class Robot(Client):
             self.cozmo.play_anim_trigger(self.CozmoBehaviors[bhv]).wait_for_completed()
 #            self.cozmo.wait_for_all_actions_completed()
 
-    def doWInDance(self):
-        self.cozmo.wait_for_all_actions_completed()
-        self.cozmo.move_lift(5)
-        time.sleep(1)
-        self.cozmo.play_anim_trigger(cozmoR.anim.Triggers.CodeLabWin).wait_for_completed()
-        self.cozmo.turn_in_place(degrees(359)).wait_for_completed()
-        self.cozmo.move_lift(-5)
+    def doWInDance(self, bien):
+        print("Celebrando")
+        self.cozmo.load_anims()
+        if bien:
+            self.cozmo.play_anim("anim_meetcozmo_celebration_02")
+        else:
+            self.cozmo.play_anim("anim_dizzy_pickup_01")
+        self.cozmo.wait_for(pycozmo.event.EvtAnimationCompleted)
 
     def getPantallaCargaLoadingValue(self):
         return self.pantallaDeCarga.getLoadingBarValue()
@@ -271,6 +269,18 @@ class Robot(Client):
         image.save(os.path.dirname(__file__) + '/../camera/camera.png', "PNG")
         self.isSaved = True
         print("Image already saved")
+
+    def celebrar(self):
+        print("Celebrando")
+        self.cozmo.load_anims()
+        self.cozmo.play_anim("anim_meetcozmo_celebration_02")
+        self.cozmo.wait_for(pycozmo.event.EvtAnimationCompleted)
+
+    def seleccionErronea(self):
+        print("Mostrando que la respuesta es errónea")
+        self.cozmo.load_anims()
+        self.cozmo.play_anim("anim_dizzy_pickup_01")
+        self.cozmo.wait_for(pycozmo.event.EvtAnimationCompleted)
 
 if __name__ == '__main__':
     robot = Robot()
