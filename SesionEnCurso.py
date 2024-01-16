@@ -10,10 +10,12 @@ import pycozmo
 import pyttsx3
 from PySide2 import QtWidgets
 from PySide2.QtCore import QFile, QIODevice, QSize, Qt
-from PySide2.QtGui import QIcon
+from PySide2.QtGui import QIcon, QPixmap
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
+from PySide2.QtWidgets import QGraphicsView
 from cozmo.util import degrees
+from qtpy import QtCore
 
 from db.queries import getPreguntaById, getHistoriasById, darAltaSesion
 
@@ -36,6 +38,8 @@ class SesionEnCurso(QWidget):
         self.estado = 0
         self.pausado = True
         self.detenido = True
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.mostrarCam)
         self.botonPausar.clicked.connect(self.pausar)
         self.botonReanudar.clicked.connect(self.reanudar)
         self.botonSituacion.clicked.connect(self.contarSituacion)
@@ -43,6 +47,7 @@ class SesionEnCurso(QWidget):
         self.botonPregunta.clicked.connect(self.cozmoPregunta)
         self.botonPremio.clicked.connect(self.darRecompensa)
         self.botonDetener.clicked.connect(self.detener)
+        self.botonCamara.clicked.connect(self.infoCam)
         self.botonEvaluacion.clicked.connect(self.evaluarSesion)
         self.barraVolumen.valueChanged.connect(self.cambiarVolumen)
         self.lineasFichero = {}; #listado con las lineas del fichero de situación
@@ -62,6 +67,11 @@ class SesionEnCurso(QWidget):
         self.mostrarPantallas()
         self.emocionCorrecta = False
         self.audioSpeaker = None
+        self.camaraEncendida = False
+        angle = (pycozmo.robot.MAX_HEAD_ANGLE.radians - pycozmo.robot.MIN_HEAD_ANGLE.radians) / 4.0
+        self.robot.cozmo.set_head_angle(angle)
+        time.sleep(1)
+        self.imagenApril = None
 
     def mostrarPantallas(self):
         if self.isVisibleSesion():
@@ -71,6 +81,7 @@ class SesionEnCurso(QWidget):
 
     def showSesion(self):
         self.windowSesion.show()
+        self.mostrarCamApagada()
         self.formVisible = True
 
     def hideSesion(self):
@@ -82,7 +93,7 @@ class SesionEnCurso(QWidget):
 
     def setupUiSesionEnCurso(self, DarAlta):
 
-        ui_file_name2 = "./interfaz/SesionEnCurso2.ui"
+        ui_file_name2 = "./interfaz/SesionEnCurso3.ui"
         ui_fileSesionCurso = QFile(ui_file_name2)
 
         if not ui_fileSesionCurso.open(QIODevice.ReadOnly):
@@ -106,7 +117,9 @@ class SesionEnCurso(QWidget):
         self.botonPremio = self.windowSesion.findChild(QPushButton, 'botonPremio')
         self.botonDetener = self.windowSesion.findChild(QPushButton, 'botonDetener')
         self.botonEvaluacion = self.windowSesion.findChild(QPushButton, 'botonEvaluacion')
+        self.botonCamara = self.windowSesion.findChild(QPushButton, 'botonCamara')
         self.barraVolumen = self.windowSesion.findChild(QSlider, 'barraVolumen')
+        self.camCozmoView = self.windowSesion.findChild(QGraphicsView, 'camGraphicsView')
 
     def definirIconoBotones(self):
         # imagen boton Contar Sitacion
@@ -148,6 +161,11 @@ class SesionEnCurso(QWidget):
         iconoEvaluacion = QIcon()
         iconoEvaluacion.addFile("./interfaz/iconos/puntuaciones.png", QSize(), QIcon.Normal, QIcon.Off)
         self.botonEvaluacion.setIcon(iconoEvaluacion)
+
+        #imagen boton camara
+        iconoCamara = QIcon()
+        iconoCamara.addFile("./interfaz/iconos/botonCamara.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.botonCamara.setIcon(iconoCamara)
 
         #Valores barra volumen
         self.barraVolumen.setMinimum(0)
@@ -201,25 +219,28 @@ class SesionEnCurso(QWidget):
             raise (e)
 
     def contarSituacion(self):
+        self.estado = 0
         print("Contado situación")
+        self.mostrarCamApagada()
         self.leerSituacion(self.historia)
 
-        self.estado = 0
-        self.estado += 1
         if self.pausado == False:
+            self.estado = 1
             self.cambiarEstado()
 
     def comprobarEmociones(self):
+        self.estado = 2
+        self.mostrarCamApagada()
         print("Comprobar emociones")
         self.lineasSinDecir = {}
         self.capturarApriltag()
-        # self.estado = 1
-        self.estado += 1
         if self.pausado == False:
+            self.estado = 3
             self.cambiarEstado()
 
     def cozmoPregunta(self):
-        # self.estado = 2
+        self.estado = 1
+        self.mostrarCamApagada()
         print("Cozmo pregunta")
         self.lineasSinDecir = {}
         # obtener cuerpo pregunta
@@ -232,30 +253,29 @@ class SesionEnCurso(QWidget):
         time.sleep(1)
         self.robot.cozmo.play_audio('pregunta.wav')
         print(cuerpoPregunta.replace("{nombreNiño}", self.datosSesion[3]))
-        self.estado += 1
         if self.pausado == False:
+            self.estado = 2
             self.cambiarEstado()
 
     def darRecompensa(self):
+        self.mostrarCamApagada()
+        self.estado = 3
         self.lineasSinDecir = {}
         print("Dando recompensa")
         if self.imagenApril != None:
             if self.emocionCorrecta:
-                print("EMocion correcta")
-                print("baila:")
-
-                self.robot.doWInDance()
+                self.robot.doWInDance(True)
             else:
-                print("sadness:")
-                self.robot.sendBehaviour("unhappy")
-
-            self.estado = 3
-            self.estado += 1
+                self.robot.doWInDance(False)
             if self.pausado == False:
+                self.estado = 4
                 self.cambiarEstado()
 
     def evaluarSesion(self):
+        self.mostrarCamApagada()
         print("Evaluando Sesion")
+        self.evaluacionNiño = None
+        self.evaluacionTerapeuta = None
         angle = (pycozmo.robot.MAX_HEAD_ANGLE.radians - pycozmo.robot.MIN_HEAD_ANGLE.radians) / 2.0
         self.robot.cozmo.set_head_angle(angle)
         time.sleep(1)
@@ -276,20 +296,30 @@ class SesionEnCurso(QWidget):
         self.audioSpeaker.runAndWait()
         time.sleep(1)
         self.robot.speakText('evaluacionUsuario.wav')
-        self.evaluacionNiño = self.robot.getAprilTagId()
+        while self.evaluacionNiño == None:
+            self.evaluacionNiño = self.robot.getAprilTagId()
         print("Apriltag de la evaluacion del niño: " + str(self.evaluacionNiño))
         os.remove('evaluacionUsuario.wav')
+        self.instanciarAudio()
+        self.audioSpeaker.save_to_file("Listo",
+                                       'listo.wav')
+        self.audioSpeaker.runAndWait()
+        time.sleep(1)
+        self.robot.speakText('listo.wav')
 
         # Evaluación terapeuta
         self.instanciarAudio()
-        self.audioSpeaker.save_to_file("Ahora los mayores, ¿Crees que esta sesión a ayudado a {nombreNiño}? Muestrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]),
+        self.audioSpeaker.save_to_file("Terapeuta, cuanto ha ayudado a {nombreNiño}".replace("{nombreNiño}", self.datosSesion[3]),
                                        'evaluacionTerapeuta.wav')
         self.audioSpeaker.runAndWait()
         time.sleep(1)
         self.robot.speakText('evaluacionTerapeuta.wav')
-        self.evaluacionTerapeuta = self.robot.getAprilTagId()
+        while self.evaluacionTerapeuta == None:
+            self.evaluacionTerapeuta = self.robot.getAprilTagId()
         print("Apriltag de la evaluacion del terapeuta " + str(self.evaluacionTerapeuta))
         os.remove('evaluacionTerapeuta.wav')
+        self.robot.speakText('listo.wav')
+        os.remove('listo.wav')
 
         print("Guardando Info sesion")
         if self.evaluacionNiño != None and self.evaluacionTerapeuta != None:
@@ -312,6 +342,7 @@ class SesionEnCurso(QWidget):
         print("Cambiando volumen cozmo: " + str(self.barraVolumen.value()))
         maxVolum = 65535
         self.robot.cozmo.set_volume((self.barraVolumen.value()*maxVolum) / 100)
+        print("volumen: " + str((self.barraVolumen.value()*maxVolum) / 100))
         # self.robot.cozmo.set_robot_volume(self.barraVolumen.value()/100)
         self.app.processEvents()
 
@@ -354,32 +385,16 @@ class SesionEnCurso(QWidget):
     def capturarApriltag(self):
         angle = (pycozmo.robot.MAX_HEAD_ANGLE.radians - pycozmo.robot.MIN_HEAD_ANGLE.radians) / 2.0
         self.robot.cozmo.set_head_angle(angle)
+        apriltagImagen = None
         # self.robot.cozmo.wait_for_all_actions_completed()
-        apriltagImagen = self.robot.getAprilTagId()
+        while apriltagImagen == None:
+            apriltagImagen = self.robot.getAprilTagId()
         print("Apriltag de la imagen: " + str(apriltagImagen))
         self.imagenApril = apriltagImagen
         if apriltagImagen != None and apriltagImagen == self.idAprilTagEmocion:
             self.emocionCorrecta = True
         else:
             self.emocionCorrecta = False
-
-#TODO: Nuevo método de evaluación
-#TODO: Cambiar como habla Cozmo
-
-    # def crearFrasesDefault(self):
-    #     print("Creando frases default.")
-    #     self.audioSpeaker.save_to_file("Para finalizar, es hora de evaluar la sesión", 'EvaluarSesionIntro.wav')
-    #     self.audioSpeaker.runAndWait()
-    #     self.audioSpeaker.save_to_file("{nombreNiño}, ¿te ha gustado la sesión? Muéstrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]), 'EvaluarSesionChild.wav')
-    #     self.audioSpeaker.runAndWait()
-    #     self.audioSpeaker.save_to_file("Ahora los mayores, ¿Crees que esta sesión a ayudado a {nombreNiño}? Muestrame cuanto del uno al diez".replace("{nombreNiño}", self.datosSesion[3]), 'EvaluarSesionTerapeuta.wav')
-    #     self.audioSpeaker.runAndWait()
-    #
-    # def play_audio(self, nameFile):
-    #     pkts = audio_lib.load_wav(nameFile)
-    #     self.robot.set_volume(65535)
-    #     cli.play_audio("audio.wav")
-    #     cli.wait_for(pycozmo.event.EvtAudioCompleted)
 
     def closeEvent(self, event):
         self.cozmo.robot.disconnect()
@@ -390,4 +405,38 @@ class SesionEnCurso(QWidget):
             del(self.audioSpeaker)
         self.audioSpeaker = pyttsx3.init()
         self.audioSpeaker.setProperty('rate', 200)
-        self.audioSpeaker.setProperty('voice', 'spanish+f1')  # voz lo más femenina posible
+        self.audioSpeaker.setProperty('voice', 'spanish')  # voz lo más femenina posible
+
+    def infoCam(self):
+        if self.camaraEncendida:
+            print("Apagar cam")
+
+            self.mostrarCamApagada()
+        else:
+            print("Encender cam")
+            self.camaraEncendida = True
+            self.timer.start(1)
+
+    def mostrarCamApagada(self):
+        self.camaraEncendida = False
+        self.timer.stop()
+        print("Mostrar cam apagada")
+        print("qgrapic size: " + str(self.camCozmoView.size()))
+        pix = QPixmap("camaraApagada.png")
+        pix.scaled(320, 190)
+        item = QGraphicsPixmapItem(pix)
+        scene = QtWidgets.QGraphicsScene()
+        scene.addItem(item)
+        self.camCozmoView.setScene(scene)
+        print("Just set scene")
+
+    def mostrarCam(self):
+        print("Mostrar cam")
+        self.robot.getImageForVideo()
+        pix = QPixmap("cam.png")
+        pix.scaled(329,198)
+        item = QGraphicsPixmapItem(pix)
+        scene = QtWidgets.QGraphicsScene()
+        scene.addItem(item)
+        self.camCozmoView.setScene(scene)
+        print("Just set scene")

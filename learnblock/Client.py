@@ -545,6 +545,17 @@ class Client(Thread, metaclass=MetaClient):
                 self.__listAprilIDs = [a.id for a in aprils]
                 self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
 
+    def getImageForVideo(self, _keyCam = "ROBOT"):
+        img = self.__Cameras[_keyCam].getImage()
+        # print("get image " + str(img))
+        frame = RoboCompApriltag.TImage()
+        frame.width = img.shape[0]
+        frame.height = img.shape[1]
+        frame.depth = img.shape[2] if len(img.shape) > 3 else 3
+        frame.image = np.fromstring(img, np.uint8)
+        imgen = Img.fromarray(img, 'RGB')
+        imgen.save('cam.png')
+
     def lookingLabel(self, id, _keyCam="ROBOT"):
         time.sleep(0)
         if isinstance(id, str):
@@ -599,6 +610,12 @@ class Client(Thread, metaclass=MetaClient):
             self.__current_emotions = self.__emotionrecognition_proxy.processimage(frame)
             self.__emotion_current_exist = True
         return self.__current_emotions
+
+    def celebrarRespuestaCorrecta(self):
+        self.cozmo.celebrarRespuestaCorrecta()
+
+    def mostrarRespuestaIncorrecta(self):
+        self.cozmo.mostrarRespuestaIncorrecta()
 
     def __del__(self):
             self.active = False

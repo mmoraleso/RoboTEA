@@ -49,7 +49,6 @@ class PantallaDeCarga(QWidget):
     def showCarga(self):
         self.windowCarga.show()
         self.formVisibleCarga = True
-        time.sleep(2)
 
     def hideCarga(self):
         self.windowCarga.hide()

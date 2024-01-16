@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="iconos">
+    <file>botonCamara.png</file>
     <file>puntuaciones.png</file>
     <file>fondo.png</file>
     <file>boton-agregar.png</file>
