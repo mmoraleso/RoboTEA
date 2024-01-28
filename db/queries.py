@@ -13,7 +13,7 @@ def crearConexion():
 
 def getAll():
     con = crearConexion()
-    query = """SELECT * FROM childrenData"""
+    query = """SELECT * FROM usuarios"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query)
@@ -29,7 +29,7 @@ def getAll():
 
 def getById(_id):
     con = crearConexion()
-    query = f"""SELECT * FROM childrenData WHERE id = {_id}"""
+    query = f"""SELECT * FROM usuarios WHERE id = {_id}"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query)
@@ -61,7 +61,7 @@ def getEmocionById(_id):
 def darAlta(data):
     print("Se va a realizar una alta")
     con = crearConexion()
-    query = """INSERT INTO childrenData (name, age, gender, tea, discapacidad_intelectual, comunicacion_oral) VALUES (%s,%s,%s,%s,%s,%s)"""
+    query = """INSERT INTO usuarios (name, age, gender, tea, discapacidad_intelectual, comunicacion_oral) VALUES (%s,%s,%s,%s,%s,%s)"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query, data)
@@ -78,7 +78,7 @@ def darAlta(data):
 def actualizarDatosNiños(_id, data):
     con = crearConexion()
     print("ID que llega al actualizar: " + str(_id))
-    query = f"""UPDATE childrenData SET name = %s, age = %s, gender = %s, tea = %s, discapacidad_intelectual = %s, comunicacion_oral = %s WHERE id = {_id}"""
+    query = f"""UPDATE usuarios SET name = %s, age = %s, gender = %s, tea = %s, discapacidad_intelectual = %s, comunicacion_oral = %s WHERE id = {_id}"""
     try:
         cursorObj = con.cursor()
         datosquery = (data, _id)
@@ -95,7 +95,7 @@ def actualizarDatosNiños(_id, data):
 
 def deleteById(_id):
     con = crearConexion()
-    query = f"""DELETE FROM childrenData WHERE id = {_id}"""
+    query = f"""DELETE FROM usuariosº WHERE id = {_id}"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query)

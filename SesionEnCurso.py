@@ -415,7 +415,7 @@ class SesionEnCurso(QWidget):
         else:
             print("Encender cam")
             self.camaraEncendida = True
-            self.timer.start(1)
+            self.timer.start(100)
 
     def mostrarCamApagada(self):
         self.camaraEncendida = False
