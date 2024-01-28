@@ -1,4 +1,3 @@
-import os
 import sys
 
 from PySide2.QtCore import QFile, QIODevice, Qt

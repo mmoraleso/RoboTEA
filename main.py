@@ -1,21 +1,17 @@
+import os
 import signal
-import sys, os
+import sys
 
-import PySide2
 # import self as self
 from PySide2 import QtCore
-from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
-from PySide2.QtGui import QFont, QPixmap, QIcon
+from PySide2 import QtWidgets
+from PySide2.QtCore import QFile, QIODevice, QSize
+from PySide2.QtGui import QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
-from PySide2 import QtWidgets
 
 from EleccionEditor import EleccionEditor
-from darAlta import DarAltaClass
-from listadoAltas import ListadoAltas
 from opcionesSesion import OpcionesSesion
-
-
 
 absolute_path = os.path.dirname(__file__)
 if absolute_path:

@@ -14,7 +14,6 @@ from PySide2.QtGui import QIcon, QPixmap
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 from PySide2.QtWidgets import QGraphicsView
-from cozmo.util import degrees
 from qtpy import QtCore
 
 from db.queries import getPreguntaById, getHistoriasById, darAltaSesion

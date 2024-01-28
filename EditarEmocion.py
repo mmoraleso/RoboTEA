@@ -5,7 +5,7 @@ from PySide2.QtCore import QFile, QIODevice, Qt
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
-from db.queries import getById, actualizarEmocion, getEmocionById
+from db.queries import actualizarEmocion, getEmocionById
 
 
 class EditarEmocion(QWidget):

@@ -8,7 +8,7 @@ from PySide2.QtWidgets import *
 
 from CrearEmocion import CrearEmocion
 from EditarEmocion import EditarEmocion
-from db.queries import getAll, deleteById, getAllEmociones, deleteEmocionesById
+from db.queries import getAllEmociones, deleteEmocionesById
 
 
 class ListadoEmociones(QWidget):

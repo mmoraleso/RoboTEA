@@ -1,15 +1,15 @@
 import os
-import signal
 import sys
+
 from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import QFile, QIODevice, QSize, QRect, Qt
-from PySide2.QtGui import QFont, QPixmap, QIcon
+from PySide2.QtCore import QFile, QIODevice, Qt
+from PySide2.QtGui import QFont
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
 from CrearEditarHistoriaPregunta import CrearEditarHistoriaPregunta
-from db.queries import getAll, deleteById, getAllPreguntas, deletePreguntasById, deleteHistoriaById, getAllHistorias
-from editarAlta import EditarAlta
+from db.queries import getAllPreguntas, deletePreguntasById, deleteHistoriaById, getAllHistorias
+
 
 class ListadoHistoriasPreguntas(QWidget):
     def __init__(self, accionSeleccionada):

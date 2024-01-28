@@ -4,7 +4,7 @@ from PySide2.QtCore import QFile, QIODevice, Qt
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import *
 
-from db.queries import darAlta, darAltaEmociones
+from db.queries import darAltaEmociones
 
 
 class CrearEmocion(QWidget):
