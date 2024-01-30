@@ -27,9 +27,6 @@ class SesionEnCurso(QWidget):
         QWidget.__init__(self)
         self.windowOpciones = windowOpciones
         self.setWindowTitle("Sesion En Curso")
-        # self.windowOpciones.close()
-        # self.pantallaDeCarga = PantallaDeCarga()
-        # self.mostrarPantallas()
         self.setupUiSesionEnCurso(self)
         self.setWindowFlag(Qt.Window)
         self.definirIconoBotones()
@@ -355,10 +352,8 @@ class SesionEnCurso(QWidget):
         print("Empieza la situación")
 
         while not self.pausado and self.lineasSinDecir and not self.detenido:
-            print("Pausado " + str(self.pausado) + " Detenido: " + str(self.detenido))
 
             try:
-                print("Diciendo la linea: "+ self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
                 self.app.processEvents()
                 self.instanciarAudio()
                 self.audioSpeaker.save_to_file(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]), 'fraseHistoria.wav')
@@ -366,12 +361,9 @@ class SesionEnCurso(QWidget):
                 print("despues del run y antes del speak text")
                 time.sleep(1)
                 self.robot.speakText('fraseHistoria.wav')
-                # self.robot.cozmo.wait_for(pycozmo.event.EvtAudioCompleted)
-                # self.robot.deviceSendTextHuman(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]))
-                # self.robot.cozmo.wait_for_all_actions_completed()
                 print("Se terminó la frase")
 
-                # Una vez dice la frase podemos borrarla del fichero de lineas sin decir
+                # Una vez dice la frase podemos borrarla del listado de lineas sin decir
                 self.app.processEvents()
                 self.lineasSinDecir.pop(0)
                 os.remove('fraseHistoria.wav')
@@ -379,7 +371,6 @@ class SesionEnCurso(QWidget):
                 print("Hay un error contando la situación")
 
         print("Cozmo ha terminado de contar la situación.")
-        # self.pausado = True
 
     def capturarApriltag(self):
         angle = (pycozmo.robot.MAX_HEAD_ANGLE.radians - pycozmo.robot.MIN_HEAD_ANGLE.radians) / 2.0
@@ -409,7 +400,6 @@ class SesionEnCurso(QWidget):
     def infoCam(self):
         if self.camaraEncendida:
             print("Apagar cam")
-
             self.mostrarCamApagada()
         else:
             print("Encender cam")
