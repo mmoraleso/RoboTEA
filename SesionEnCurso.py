@@ -358,7 +358,6 @@ class SesionEnCurso(QWidget):
                 self.instanciarAudio()
                 self.audioSpeaker.save_to_file(self.lineasSinDecir[0].replace("{nombreNiño}", self.datosSesion[3]), 'fraseHistoria.wav')
                 self.audioSpeaker.runAndWait()
-                print("despues del run y antes del speak text")
                 time.sleep(1)
                 self.robot.speakText('fraseHistoria.wav')
                 print("Se terminó la frase")
