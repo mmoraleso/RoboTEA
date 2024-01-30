@@ -85,11 +85,6 @@ class Robot(Client):
         cozmo = self.cozmo
 
     def connectToRobot(self):
-        # self.pantallaDeCarga.receiveLoadingPageInfo(50)
-        # cozmoR.robot.Robot.drive_off_charger_on_connect = False
-        # self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program))
-        # self.t.start()
-        # time.sleep(2)
         global stopThread
         stopThread = True
         print("Conectando cozmo con pycozmo")
@@ -99,13 +94,10 @@ class Robot(Client):
         self.cozmo.wait_for_robot()
         print("Se ha conectado cozmo con pycozmo")
 
-
     def disconnect(self):
         print("disconnecting")
         self.cozmo.disconnect()
         self.cozmo.stop()
-        # self.deviceMove(0,0)
-        # self.cozmo.wait_for_all_actions_completed()
         global stopThread
         stopThread = True
 
@@ -180,8 +172,6 @@ class Robot(Client):
         return {"central": ground}
 
     def deviceReadCamera(self):
-        # lastimg = self.cozmo.world.latest_image
-        # if lastimg is not None:
         print("Realizando foto")
         self.cozmo.enable_camera(enable=True, color=True)
             # Wait for image to stabilize.
@@ -189,10 +179,6 @@ class Robot(Client):
 
         self.cozmo.add_handler(pycozmo.event.EvtNewRawCameraImage, self.on_camera_image, one_shot=True)
         time.sleep(1)
-            # img = lastimg.annotate_image()
-            # open_cv_image = np.array(img.convert('RGB'))
-            # cv_image = open_cv_image[:, :, ::-1].copy()
-            # cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
         while not self.isSaved:
             time.sleep(0.5)
         cv_image = cv2.imread(os.path.dirname(__file__) + '/../camera/camera.png', cv2.COLOR_RGB2GRAY)

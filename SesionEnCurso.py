@@ -375,7 +375,6 @@ class SesionEnCurso(QWidget):
         angle = (pycozmo.robot.MAX_HEAD_ANGLE.radians - pycozmo.robot.MIN_HEAD_ANGLE.radians) / 2.0
         self.robot.cozmo.set_head_angle(angle)
         apriltagImagen = None
-        # self.robot.cozmo.wait_for_all_actions_completed()
         while apriltagImagen == None:
             apriltagImagen = self.robot.getAprilTagId()
         print("Apriltag de la imagen: " + str(apriltagImagen))
