@@ -53,6 +53,7 @@ class EleccionEditor(QWidget):
         if not self.windowEleccion:
             print(self.windowEleccion.errorString())
             sys.exit(-1)
+        self.windowEleccion.setWindowTitle("Configuración")
 
         self.botonHistorias = self.windowEleccion.findChild(QPushButton, 'historias_button')
         self.botonPreguntas = self.windowEleccion.findChild(QPushButton, 'preguntas_button')

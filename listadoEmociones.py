@@ -46,6 +46,7 @@ class ListadoEmociones(QWidget):
         loaderAlta = QUiLoader()
         self.windowListaEmocion = loaderAlta.load(ui_fileListado)
         ui_fileListado.close()
+        self.windowListaEmocion.setWindowTitle("Listado")
 
         self.crearEmocionesButton = self.windowListaEmocion.findChild(QPushButton, 'add_Button')
         if not self.windowListaEmocion:

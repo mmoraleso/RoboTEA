@@ -95,7 +95,7 @@ def actualizarDatosNiños(_id, data):
 
 def deleteById(_id):
     con = crearConexion()
-    query = f"""DELETE FROM usuariosº WHERE id = {_id}"""
+    query = f"""DELETE FROM usuarios WHERE id = {_id}"""
     try:
         cursorObj = con.cursor()
         cursorObj.execute(query)

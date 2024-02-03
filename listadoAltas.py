@@ -46,6 +46,7 @@ class ListadoAltas(QWidget):
         loaderAlta = QUiLoader()
         self.windowLista = loaderAlta.load(ui_fileListado)
         ui_fileListado.close()
+        self.windowLista.setWindowTitle("Listado")
 
         self.crearChildButton = self.windowLista.findChild(QPushButton, 'addNino_Button')
         if not self.windowLista:

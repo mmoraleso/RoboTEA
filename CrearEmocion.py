@@ -50,6 +50,7 @@ class CrearEmocion(QWidget):
         self.aprilTagSpinBox = self.windowAlta.findChild(QSpinBox, 'spinBox')
         self.botonAceptar = self.windowAlta.findChild(QPushButton, 'aceptar_alta_button_2')
         self.botonCancelar = self.windowAlta.findChild(QPushButton, 'cancelar_alta_button_2')
+        self.windowAlta.setWindowTitle("Crear")
         print("Después del show")
 
 

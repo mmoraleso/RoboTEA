@@ -68,11 +68,13 @@ class CrearEditarHistoriaPregunta(QWidget):
         self.contenidoTE = self.windowEditarHP.findChild(QTextEdit, 'contenidoTextEdit')
 
         if self.accion == 'C':
+            self.windowEditarHP.setWindowTitle("Crear")
             if (self.tipoDato == 'P'):
                 tituloWindow.setText("Crear pregunta")
             else:
                 tituloWindow.setText("Crear historia")
         else:
+            self.windowEditarHP.setWindowTitle("Editar")
             if (self.tipoDato == 'P'):
                 tituloWindow.setText("Editar pregunta")
                 self.tituloTE.setPlainText(self.tituloPregunta)

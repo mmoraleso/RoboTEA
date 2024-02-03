@@ -48,6 +48,7 @@ class EditarAlta(QWidget):
         if not self.windowEditar:
             print(self.windowEditar.errorString())
             sys.exit(-1)
+        self.windowEditar.setWindowTitle("Editar")
         genderComboBox = self.windowEditar.findChild(QComboBox, 'comboBox')
         comunicacionOralComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_comoral')
         teaComboBox = self.windowEditar.findChild(QComboBox, 'comboBox_tea')

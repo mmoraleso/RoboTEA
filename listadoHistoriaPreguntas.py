@@ -58,7 +58,7 @@ class ListadoHistoriasPreguntas(QWidget):
         loaderAlta = QUiLoader()
         self.windowListaH = loaderAlta.load(ui_fileListado)
         ui_fileListado.close()
-
+        self.windowListaH.setWindowTitle("Listado")
         if self.accionSeleccionada == 'P':
             self.crearDataButton = self.windowListaH.findChild(QPushButton, 'addPregunta_Button')
         else:

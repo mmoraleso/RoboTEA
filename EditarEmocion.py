@@ -48,7 +48,7 @@ class EditarEmocion(QWidget):
         if not self.windowEditar:
             print(self.windowEditar.errorString())
             sys.exit(-1)
-
+        self.windowEditar.setWindowTitle("Editar")
         self.botonAceptar = self.windowEditar.findChild(QPushButton, 'aceptar_alta_button')
         self.botonCancelar = self.windowEditar.findChild(QPushButton, 'cancelar_alta_button')
         print("Después del show")

@@ -56,7 +56,7 @@ class DarAltaClass(QWidget):
         diComboBox.addItems(['Sí', 'No'])
         self.botonAceptar = self.windowAlta.findChild(QPushButton, 'aceptar_alta_button')
         self.botonCancelar = self.windowAlta.findChild(QPushButton, 'cancelar_alta_button')
-
+        self.windowAlta.setWindowTitle("Crear")
         print("Después del show")
 
 

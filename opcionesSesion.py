@@ -52,6 +52,8 @@ class OpcionesSesion(QWidget):
             print(self.windowOpciones.errorString())
             sys.exit(-1)
 
+        self.windowOpciones.setWindowTitle("Opciones de Sesion")
+
         self.historiasCB = self.windowOpciones.findChild(QComboBox, 'actividad1_CB')
         self.emocionesCB = self.windowOpciones.findChild(QComboBox, 'actividad3_CB')
         self.preguntasCB = self.windowOpciones.findChild(QComboBox, 'actividad2_CB')

@@ -35,6 +35,7 @@ class MainClass(QtWidgets.QMainWindow):
             print(loader.errorString())
             sys.exit(-1)
 
+        self.mainWindow.setWindowTitle("RoboTEA")
         #imagen Titulo
         pixmap = QPixmap(absolute_path+"./interfaz/iconos/icons8-larva-del-moscardón-96.png")
         centralwidgetFrame = self.mainWindow.centralwidget
