@@ -39,3 +39,7 @@ All icons from flaticon.com
 - <a href="https://www.flaticon.es/iconos-gratis/emociones" title="emociones iconos">Emociones iconos creados por Flat Icons - Flaticon</a>
 - <a href="https://www.flaticon.es/iconos-gratis/medalla" title="medalla iconos">Medalla iconos creados por Freepik - Flaticon</a>
 - <a href="https://www.flaticon.es/iconos-gratis/configuracion" title="configuración iconos">Configuración iconos creados por Andy Horvath - Flaticon</a>
+
+
+Los videos del funcionamiento se pueden ver en_
+- https://unexes-my.sharepoint.com/:f:/g/personal/mmoraleso_alumnos_unex_es/Erb60o6nH91Ao2-U-_M5Wc8B2IUnoy_YzUVTAVQ8oNVewg?e=bjfKoQ
